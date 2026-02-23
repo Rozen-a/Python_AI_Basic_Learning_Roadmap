@@ -11,6 +11,8 @@ WangDao_PythonAI/
 ├── Day4/          # 函数、类与对象
 ├── Day5/          # 面向对象编程
 ├── Day6/          # 类方法、异常、文件操作
+├── Day7/          # 正则表达式、排序、二叉树
+├── Day8/          # matplotlib数据可视化
 ├── 资料/          # 每天详细代码和笔记
 └── Python基础笔记.md  # 完整知识点总结
 ```
@@ -60,7 +62,23 @@ WangDao_PythonAI/
 - 深拷贝与浅拷贝
 
 ### Day7 - 进阶主题
-- 正则表达式（模式匹配、字符串处理）
-- 二叉树（数据结构基础）
-- 时间复杂度（算法效率分析）
-- sorted与sort（排序方法）
+- 正则表达式
+  - 匹配单个字符（\d, \w, \s, [a-z]）
+  - 匹配多个字符（+, *, ?, {m}, {m,n}）
+  - 匹配开头结尾（^, $）
+  - 分组匹配（|, ()）
+  - re模块（match, search, findall, sub, split）
+  - 贪婪与非贪婪模式
+- sorted与sort的使用
+- 二叉树基础
+
+### Day8 - matplotlib数据可视化
+- 基本使用（导入、plot、show）
+- 折线图（颜色、透明度、样式、标记）
+- 图片大小与保存（figure, savefig）
+- 坐标轴刻度（xticks, yticks）
+- 刻度标签（旋转、格式化）
+- 坐标轴标签与标题（xlabel, ylabel, title）
+- 一图多线、图例
+- 一图多plot、多图多plot
+- 散点图、条形图、直方图、饼图
