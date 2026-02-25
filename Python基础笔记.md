@@ -2751,3 +2751,2267 @@ data = (5, 10)
 "现在时间是：{}:{}".format(*data)  # 对元组进行拆包传参
 ```
 
+## <span style='color:red'>Day9</span>
+
+### 1. Junyter 中写在单元格最后一行的内容会直接输出，无需使用`print()`
+
+### 2. time.time()
+
+``` python
+import time
+time.time()  # 获得当前时间戳，单位：秒，1970年1月1日0时0分0秒至今的时间
+```
+
+### 3. zip()
+
+zip的功能是创建一个迭代器，迭代器中包含两个列表的元素，两个列表的元素一一对应
+
+```python
+list1 = [1, 2, 3]
+list2 = [4, 5, 6]
+
+for a, b in zip(list1, list2):  # 将list1和list2组合在一起
+    print(a, b)
+"""
+输出结果：
+1 4
+2 5
+3 6
+"""
+    
+print(list(zip(list1, list2)))
+"""
+输出结果：
+[(1, 4), (2, 5), (3, 6)]
+"""
+```
+
+### 4. Numpy核心：ndarray数组
+
+> ndarray数组中的所有元素必须是相同类型
+>
+> python列表中可以同时存放不同类型的元素
+
+#### 4.1 创建
+
+**使用列表创建**
+
+创建语法：==`np.array(列表对象)`==
+
+```python
+import numpy as np
+
+# 创建一个一维ndarray
+arr1 = np.array([1, 2, 3])
+
+王道程序员训练营
+
+print(arr1)
+print(type(arr1))
+
+# 创建一个二维ndarray
+arr2 = np.array([[1, 2, 3], [4, 5, 6]])
+print(arr2)
+print(type(arr2))
+
+# 创建一个三维ndarray
+arr3 = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
+print(arr3)
+print(type(arr3))
+```
+
+> 最外侧的方括号是0轴，往内依次是1、2、...轴
+
+****
+
+**使用函数创建特殊数组**
+
+```python
+np.zeros((2))    # 创建一个2行3列全0数组
+np.ones((3, 2))    # 创建一个3行2列全1数组
+np.empty((2,3))    # 创建一个2行3列，元素值内容随机且依赖于内存状态的数组
+```
+
+> 注意：默认创建的数组中的数据类型(dtype)都是: float64
+
+****
+
+**arrange创建一维数组**
+
+arrange() 类似 python 的 range()，用于创建一个一维 ndarray 数组。
+
+```python
+# 创建一个一维数组，起始值0，结束值10，步长2，元素类型: float32
+# 左闭右开
+arr4 = np.arange(0, 10, 2, dtype=np.float32)
+
+# 数组
+# [0., 2., 4., 6., 8.]
+```
+
+****
+
+**matrix创建二维数组**
+
+matrix是ndarray的子类，只能生成2维的矩阵
+
+```python
+arr4 = np.matrix([[1, 2, 3], [4, 5, 6]])
+
+# 注意，只能创建二维矩阵
+# 会报错 ValueError: matrix must be 2-dimensional
+# arr5 = np.matrix([[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]])
+```
+
+****
+
+**创建随机数矩阵**
+
+```python
+import numpy as np
+
+# 1. 创建一个0-1的【随机数】矩阵，矩阵是2行3列
+arr5 = np.random.randint((2,3))
+print(arr5)
+print(type(arr5))
+
+# 2. 创建一个0-10的【随机整数】矩阵，矩阵是2行3列
+arr6 = np.random.randint(0, 10, (2,3))
+print(arr6)
+print(type(arr6))
+
+# 3. 创建一个0-10的随机浮点数矩阵，矩阵是2行3列，是【均匀分布】
+arr7 = np.random.uniform(0, 10, (2,3))
+print(arr7)
+print(type(arr7))
+```
+
+#### 4.2 属性
+
+```python
+# 创建一个2行3列的矩阵，
+arr8 = np.array([[1, 2, 3], [4, 5, 6]])
+
+print(arr8.shape)    # 形状（行数，列数）→ (2, 3)
+print(arr8.ndim)    # 维度 → 2（二维数组）
+print(arr8.dtype)    # 数据类型 → int64（默认）
+print(arr8.size)    # 总元素数 → 6
+```
+
+```python
+# 创建一个3维数组
+arr9 = np.arange(24).reshape(2, 3, 4)
+
+print(arr9)
+'''
+[[[ 0  1  2  3]
+  [ 4  5  6  7]
+  [ 8  9 10 11]]
+'''
+
+print(arr9.shape) # 形状（0轴,1轴，2轴）-> (2, 3, 4)
+print(arr9.ndim)  # 3
+print(arr9.dtype)  # int32
+print(arr9.size)  # 24
+```
+
+### 5. Numpy基本操作
+
+#### 5.1 形状改变
+
+`reshape()`, 改变ndarray的形状
+
+```python
+# 一维变多维
+arr9 = np.arange(0, 12)
+arr10 = arr9.reshape(3,4)
+
+# 说明: 不改变原有矩阵，返回改变之后的新矩阵
+print(arr9)  #  [ 0  1  2  3  4  5  6  7  8  9 10 11]
+print(arr10)
+'''
+[[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]]
+'''
+```
+
+```python
+# 默认情况下‘C’以行为主的顺序展开，‘F’（Fortran风格）意味着以列的顺序展开,不重要，用不上
+arr15 = arr10.reshape((12,),order='F')
+print(arr15)  # [ 0  4  8  1  5  9  2  6 10  3  7 11]
+```
+
+```python
+arr11=arr10+2
+print(arr11)
+'''
+[[ 2  3  4  5]
+ [ 6  7  8  9]
+ [10 11 12 13]]
+'''
+
+arr12=arr11.reshape(12)  #再变回一维，元素位置不变
+print(arr12)  # [ 2  3  4  5  6  7  8  9 10 11 12 13]
+```
+
+#### 5.2 类型转换`astype()`
+
+```python
+  # [1. 2. 3. 4. 5. 6.]arr12 = np.array([1, 2, 3, 4, 5, 6])
+print(arr12.dtype)  # int32
+print(arr12)  # [1 2 3 4 5 6]
+
+# astype(), 转换ndarray的类型
+arr13 = arr12.astype(np.float32)		# 转为浮点型 → [1. 2. 3. 4. 5. 6.]
+print(arr13.dtype)  # float32
+print(arr13)  # [1. 2. 3. 4. 5. 6.]
+```
+
+#### 5.3 索引与切片
+
+```python
+# 1. 列表的索引与切片
+# list[start:end:step]
+arr = [1, 2, 3, 4, 5, 6]
+print(arr[0:4:2])           # [1, 3]
+
+# 2. 一维ndarray的索引与切片， 和列表的索引与切片一样
+arr14 = np.arange(0, 12)
+print(arr14[0:4:2])         # [0,2]
+
+print('-'*50)
+
+# 3. 多维ndarray的索引与切片
+arr15 = np.arange(0, 12).reshape(3,4)
+print(arr15)
+'''
+[[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]]
+'''
+
+# 取一行(下标为1的一行, 也就是第二行)
+print(arr15[1,:])  # [4 5 6 7]
+
+# 取一列(下标为1的一列, 也就是第二列)
+print(arr15[:,1])  # [1 5 9]
+
+# 取不连续的多行
+print(arr15[[0,2],:])
+'''
+[[ 0  1  2  3]
+ [ 8  9 10 11]]
+'''
+
+# 取从第2行开始的所有行
+print(arr15[1:,:])
+'''
+[[ 4  5  6  7]
+ [ 8  9 10 11]]
+'''
+```
+
+#### 5.4 元素访问与修改
+
+```python
+# 元素访问
+import numpy as np
+arr15 = np.arange(0, 12).reshape(3,4)
+print(arr15)
+arr15[[1,2],[0,3]]
+```
+
+> `[[ 0  1  2  3]
+>  [ 4  5  6  7]
+>  [ 8  9 10 11]]`
+>
+> `array([ 4, 11])`
+
+```python
+arr15 = np.arange(0, 12).reshape(3,4)
+arr15>5
+```
+
+> `array([[False, False, False, False],
+>        [False, False,  True,  True],
+>        [ True,  True,  True,  True]])`
+
+```python
+# 元素修改
+arr15 = np.arange(0, 12).reshape(3,4)
+print(arr15)
+
+# 修改单个值
+arr15[1,1] = 100
+print(arr15)
+
+print('-'*50)
+arr15 = np.arange(0, 12).reshape(3,4)
+
+# 修改某一行的值
+arr15[1,:] = 100
+print(arr15)
+
+print('-'*50)
+arr15 = np.arange(0, 12).reshape(3,4)
+
+# 修改某一列的值
+arr15[:,1] = 100
+print(arr15)
+
+print('-'*50)
+arr15 = np.arange(0, 12).reshape(3,4)
+
+# 修改某一个块的值
+arr15[0:2,0:2] = 100
+print(arr15)
+
+print('-'*50)
+arr15 = np.arange(0, 12).reshape(3,4)
+
+# 修改多个不相邻的点 (0,0) (1,1) (2,3)
+arr15[[0,1,2],[0,1,3]] = 99
+print(arr15)
+
+print('-'*50)
+arr15 = np.arange(0, 12).reshape(3,4)
+
+# 根据条件修改
+arr15[arr15>5] = 0
+print(arr15)
+'''
+[[0 1 2 3]
+ [4 5 0 0]
+ [0 0 0 0]]
+'''
+
+print('-'*50)
+
+# 三目运算
+result = np.where(arr15>0,10,20)
+print(result)
+'''
+[[20 10 10 10]
+ [10 10 20 20]
+ [20 20 20 20]]
+'''
+```
+
+### 6. Numpy矢量运算：矩阵的运算（数组）
+
+**广播机制**
+
+由于numpy的广播机制，在运算过程中，ndarray数组加减乘除的值被广播到所有元素上
+
+例如：arr1 是一个 ndarray 数组，`arr1 + 10` 会令 arr1 中所有元素加10
+
+```python
+arr16 = np.arange(0, 12).reshape(3,4)
+print(arr16)
+print('-' * 20)
+print(arr16 + 10) # 加法，有广播机制，每一个元素都加上10
+print('-'*20)
+print(arr16 - 5)
+print('-'*20)
+print(arr16 * 2)
+print('-'*20)
+print(arr16 / 2)
+```
+
+****
+
+**同种形状的矩阵运算，运算结果是按位进行加减乘除运算**
+
+```python
+arr17 = np.arange(10, 22).reshape(3,4)
+print(arr17)
+arr18 = np.arange(1, 13).reshape(3,4)
+print(arr18)
+
+# 加法
+print('-'*50)
+print(arr17 + arr18)
+# 减法
+print('-'*50)
+print(arr17 - arr18)
+# 乘法
+print('-'*50)
+print(arr17 * arr18)
+# 除法
+print('-'*50)
+print(arr17 / arr18)
+```
+
+****
+
+**不同形状的矩阵，不能计算**
+
+```python
+arr19 = np.arange(0, 12).reshape(3,4)
+arr20 = np.arange(0, 4).reshape(2,2)
+
+# 报错: ValueError: operands could not be broadcast together with shapes (3,4) (2,2)
+# print(arr19 + arr20)
+```
+
+****
+
+**行数或者是列数相同的一维数组和多维数组之间可以进行计算（广播特性）**
+
+```python
+# 列数相同（行形状相同）
+arr21 = np.arange(0, 12).reshape(3,4)       # 3行4列
+print(arr21)
+arr22 = np.arange(0, 4).reshape(1,4)                
+print(arr22)
+
+# 依然是广播的特性
+print(arr22-arr21)
+```
+
+> `[[ 0  1  2  3]
+>  [ 4  5  6  7]
+>  [ 8  9 10 11]]`
+>
+> `[[0 1 2 3]]`
+>
+> `[[ 0  0  0  0]
+>  [-4 -4 -4 -4]
+>  [-8 -8 -8 -8]]`
+
+```python
+# 行数相同（列形状相同）
+arr23 = np.arange(0, 12).reshape(3,4)
+print(arr23)
+arr24 = np.arange(0, 3).reshape(3,1)
+print(arr24)
+# 依然是广播的特性
+print(arr23-arr24)
+```
+
+> `[[ 0  1  2  3]
+>  [ 4  5  6  7]
+>  [ 8  9 10 11]]`
+>
+> `[[0]
+>  [1]
+>  [2]]`
+>
+> `[[0 1 2 3]
+>  [3 4 5 6]
+>  [6 7 8 9]]`
+
+****
+
+**有一个以上维度值相同的三维数组相加**
+
+```python
+arr25 = np.arange(0, 24).reshape(2,3,4)
+arr26 = np.arange(0, 8).reshape(2,1,4)
+result=arr25+arr26
+print(result.shape)  # (2, 3, 4)
+
+arr25 = np.arange(0, 24).reshape(2,3,4)
+arr26 = np.arange(0, 2).reshape(2,1,1)
+result=arr25+arr26
+print(result.shape)  # (2, 3, 4)
+
+arr25 = np.arange(0, 6).reshape(2,3,1)
+arr26 = np.arange(0, 8).reshape(2,1,4)
+result=arr25+arr26
+print(result.shape)  # (2, 3, 4)
+```
+
+### 7. Numpy 统计函数
+
+按哪一个轴进行运算，对应的轴就会发生改变
+
+#### 7.1 求和
+
+```python
+import numpy as np
+arr25 = np.arange(1, 13).reshape(3, 4)
+print(arr25)
+
+# 求所有数据的和
+print(arr25.sum())
+
+# 按轴求和
+# axis = 0, 表示按列求和
+print(arr25.sum(axis=0))
+
+# axis=1, 表示按行求和
+print(arr25.sum(axis=1))
+```
+
+#### 7.2 求平均值
+
+```python
+arr25 = np.arange(1, 13).reshape(3, 4)
+print(arr25)
+# 1. 求所有数的平均值
+print(arr25.mean())
+
+# 2. 按轴求平均值
+# axis = 0, 按列求平均值
+print(arr25.mean(axis=0))
+```
+
+#### 7.3 求最大值
+
+```python
+arr25 = np.arange(1, 13).reshape(3, 4)
+print(arr25)
+
+# 1. 求所有数的最大值
+print(arr25.max())
+
+# 2. 按轴求最大值
+# axis = 0, 按列求最大值
+print(arr25.max(axis=0))
+```
+
+#### 7.4 求最小值
+
+```python
+arr25 = np.arange(1, 13).reshape(3, 4)
+print(arr25)
+
+# 1. 求所有数的最小值
+print(arr25.min())
+
+# 2. 按轴求最小值
+# axis = 1，按行求最小值
+print(arr25.min(axis=1))
+```
+
+#### 7.5 求前缀和
+
+即当前数与当前数之前的所有数的和
+
+eg：1, 2, 3, 4, 5, 6
+
+​	5的前缀和是 1+2+3+4+5 = 15
+
+```python
+arr25 = np.arange(1, 13).reshape(3, 4)
+print(arr25)
+
+# 1. 求所有数的前缀和，不写轴会被展平，就是变为1维
+print(arr25.cumsum())
+
+# 2. 按轴求前缀和
+# axis = 1, 按行求前缀和
+print(arr25.cumsum(axis=1))
+```
+
+#### 7.6 求最小值索引
+
+```python
+arr25 = np.random.randint(0, 100, (3, 4))
+print(arr25)
+
+# 1. 求所有数的最小值索引（展开成一维后最小值的下标）
+print(arr25.argmin())
+# 2. 按轴求最小值索引
+# axis = 1, 按行求最小值索引（本行最小值的下标）
+print(arr25.argmin(axis=1))
+```
+
+#### 7.7 求标准差
+
+标准差是一组数据平均值分散程度的一种度量。
+
+- 如果标准差较大，那么代表大部分数值和其平均值之间的差异较大
+- 如果标准差较小，那么代表大部分数值和其平均值之间的差异较小
+
+标准差越大，代表数据波动越大，越不稳定；标准差越小，代表数据波动小，越稳定。
+
+```python
+arr25 = np.arange(1, 13).reshape(3, 4)
+print(arr25)
+
+# 1. 求所有数的标准差
+print(arr25.std())
+
+# 2. 按轴求标准差
+# axis = 1, 按行求标准差
+print(arr25.std(axis=1))
+```
+
+#### 7.8 求极值（最大值与最小值的差）
+
+```python
+arr25 = np.arange(1, 13).reshape(3, 4)
+print(arr25)
+
+# 1. 求所有数的极值
+print(np.ptp(arr25))
+
+# 2. 按轴求极值
+# axis = 1，按行求极值
+print(np.ptp(arr25, axis=1))
+```
+
+### 8. Numpy的其他操作
+
+#### 8.1 数组的添加
+
+基本语法：==`np.append(数组, 待添加的元素, [指定轴])`==
+
+```python
+arr27 = np.array([[1,2,3],[4,5,6]])
+print(arr27)
+
+# 数组的添加
+# 1. 默认情况下，展开为一维数组再添加
+arr28 = np.append(arr27, np.array([7,8,9]))
+print(arr28)
+
+# 2. 指定轴添加
+# axis = 0, 沿着0轴添加元素
+arr29 = np.append(arr27, np.array([[7,8,9]]), axis=0)
+print(arr29)
+
+# axis=1, 沿着1轴添加元素
+arr30 = np.append(arr27, np.array([[7],[8]]), axis=1)
+print(arr30)
+```
+
+> `[[1 2 3]
+>  [4 5 6]]`
+>
+> `[1 2 3 4 5 6 7 8 9]`
+>
+> `[[1 2 3]
+>  [4 5 6]
+>  [7 8 9]]`
+>
+> `[[1 2 3 7]
+>  [4 5 6 8]]`
+
+#### 8.2 数组的插入
+
+基本语法：==`np.insert(数组, 索引, 元素, [指定轴])`==
+
+```python
+arr28 = np.array([[1,2,3],[4,5,6]])
+print(arr28)
+
+# 数组的插入
+# 1. 默认情况下，展开为一维数组再插入
+# 2. 插入的元素必须和数组的元素形状相同
+
+# 2表示位置2
+# 7表示插入7
+arr29 = np.insert(arr28, 2, 7)
+print(arr29)
+
+# 指定轴插入
+# axis = 0，沿着0轴插入元素
+# 索引0，表示插入第一行
+arr30 = np.insert(arr28, 0, np.array([[7,8,9]]), axis=0)
+print(arr30)
+```
+
+#### 8.3 数组的删除
+
+基本语法：==`np.delete(数组, 下标, [指定轴])`==
+
+```python
+# 数组的删除
+arr28 = np.array([[1,2,3],[4,5,6]])
+print(arr28)
+
+# 1. 默认情况下，展开为一维数组再删除, 2表示删除索引为2的元素
+arr31 = np.delete(arr28, 2)
+print(arr31)
+
+# 2. 指定轴删除
+# axis = 0, 沿着0轴删除元素
+# 0表示删除索引为0的元素, 也就是删除第一行
+arr32 = np.delete(arr28, 0, axis=0)
+print(arr32)
+```
+
+> `[[1 2 3]
+>  [4 5 6]]`
+>
+> `[1 2 4 5 6]`
+>
+> `[[4 5 6]]`
+
+#### 8.4 数组的去重
+
+基本语法：==`np.unique(数组, [指定轴])`==
+
+```python
+# 数组的去重
+arr29 = np.array([1,2,3,4,5,5,5,6,7,8,9,9]).reshape(3,4)
+print(arr29)
+
+# 1. 直接去重
+# 默认情况下，展开一维数组再去重，得到的也是一维数组
+arr30 = np.unique(arr29)
+print(arr30)
+
+# 2. 按轴去重
+# axis = 0, 沿着0轴去重
+# 添加一行重复数据
+arr31 = np.append(arr29, np.array([[1,2,3,4]]), axis=0)
+print(arr31)
+
+# 去重，去除重复数据
+arr32 = np.unique(arr31, axis=0)
+print(arr32)
+```
+
+> `[[1 2 3 4]
+>  [5 5 5 6]
+>  [7 8 9 9]]`
+>
+> `[1 2 3 4 5 6 7 8 9]`
+>
+> `[[1 2 3 4]
+>  [5 5 5 6]
+>  [7 8 9 9]
+>  [1 2 3 4]]`
+>
+> `[[1 2 3 4]
+>  [5 5 5 6]
+>  [7 8 9 9]]`
+
+#### 8.5 数组的拼接、堆叠与分割
+
+**数组的拼接`concatenate()`**
+
+```python
+# 数组的拼接，非拼接轴，对应的size必须一致  不会增加维度
+arr33 = np.array([[1,2,3],[4,5,6]])
+arr34 = np.array([[7,8,9],[10,11,12]])
+
+# 默认情况下，沿着轴0进行拼接
+arr35 = np.concatenate((arr33, arr34))
+print(arr35)
+
+# 指定轴了之后，按轴1拼接
+print(np.concatenate((arr33, arr34), axis=1))
+```
+
+> `[[ 1  2  3]
+>  [ 4  5  6]
+>  [ 7  8  9]
+>  [10 11 12]]`
+>  
+> `[[ 1  2  3  7  8  9]
+> [ 4  5  6 10 11 12]]`
+
+****
+
+**数组的堆叠`stack()`**
+
+按哪个轴堆叠，就会增加一个维度，对应维度的size是数组的个数
+
+```python
+import numpy as np
+a = np.array([1, 2, 3])  # shape: (3,)
+b = np.array([4, 5, 6])  # shape: (3,)
+c= np.array([7, 8, 9])
+# axis = 0，沿着0轴进行堆叠
+print(np.stack([a, b, c], axis=0))
+```
+
+> `array([[1, 2, 3],
+>        [4, 5, 6],
+>        [7, 8, 9]])`
+
+```python
+print(np.stack([a, b], axis=-1))
+```
+
+> `[[1 4]
+>  [2 5]
+>  [3 6]]`
+
+```python
+# 二维数组的堆叠
+a = np.arange(12).reshape(3, 4)
+b = np.arange(12,24).reshape(3, 4)
+
+
+# axis = 0，沿着0轴进行堆叠, （新轴在第0位，长度=2）
+np.stack([a, b], axis=0).shape
+```
+
+> `(2, 3, 4)`
+
+```python
+np.stack([a, b], axis=1).shape
+```
+
+> `(3, 2, 4)`
+
+```python
+np.stack([a, b], axis=2).shape
+```
+
+> `(3, 4, 2)`
+
+****
+
+**数组的分割`split()`**
+
+```python
+arr36 = np.arange(1, 10).reshape(3, 3)
+print(arr36)
+
+# 1. 默认情况下，按轴0进行分割
+# 3表示分割成3份
+arr37 = np.split(arr36, 3)
+print(arr37)
+print(type(arr37))
+
+# 2. 按轴1进行分割
+arr38 = np.split(arr36, 3, axis=1)
+print(arr38)
+```
+
+> `[[1 2 3]
+>  [4 5 6]
+>  [7 8 9]]`
+>
+> `[array([[1, 2, 3]]), array([[4, 5, 6]]), array([[7, 8, 9]])]`
+>
+> `<class 'list'>`
+>
+> `[array([[1],
+>        [4],
+>        [7]]), 
+>  array([[2],
+>        [5],
+>        [8]]), 
+>  array([[3],
+>        [6],
+>        [9]])]`
+
+#### 8.6 数组的转置与轴滚动
+
+```python
+arr39 = np.arange(0, 12).reshape(3, 4)
+print("原始数组:")
+print(arr39)
+
+# 1. 转置第一种方式
+arr40 = arr39.T
+print("转置第一种方式:")
+print(arr40)
+
+# 2. 转置第二种方式
+arr41 = np.transpose(arr39)
+print("转置第二种方式:")
+print(arr41)
+
+# 3. 对换数组的轴
+arr42 = np.transpose(arr39)
+print("对换轴:")
+print(arr42)
+```
+
+> `原始数组:
+> [[ 0  1  2  3]
+>  [ 4  5  6  7]
+>  [ 8  9 10 11]]
+> 转置第一种方式:
+> [[ 0  4  8]
+>  [ 1  5  9]
+>  [ 2  6 10]
+>  [ 3  7 11]]
+> 转置第二种方式:
+> [[ 0  4  8]
+>  [ 1  5  9]
+>  [ 2  6 10]
+>  [ 3  7 11]]
+> 对换轴:
+> [[ 0  4  8]
+>  [ 1  5  9]
+>  [ 2  6 10]
+>  [ 3  7 11]]`
+
+```python
+# 4. 轴滚动
+arr39 = np.arange(0, 12).reshape(3, 4)
+print("原始数组:")
+print(arr39)
+
+# 表示把1轴滚动到0轴的位置
+arr43 = np.rollaxis(arr39, 1, 0)
+print("轴滚动:")
+print(arr43.shape)
+
+# 轴滚动第二个案例
+arr44 = np.ones((3, 4, 5, 6))
+print(arr44.shape)
+
+# 表示把3轴滚动到1轴的位置
+arr45 = np.rollaxis(arr44, 3, 1)
+print(arr45.shape)
+```
+
+> `原始数组:
+> [[ 0  1  2  3]
+>  [ 4  5  6  7]
+>  [ 8  9 10 11]]`
+>
+> `轴滚动:
+> (4, 3)`
+>
+> `(3, 4, 5, 6)`
+>
+> `(3, 6, 4, 5)`
+
+#### 8.7 读取文件数据
+
+从文件中读取数据的API：==`np.loadtxt()`==
+
+只能读 .csv 或 .txt 文件
+
+`np.loadtxt(fname, dtype=float, delimiter=None, converters=None, skiprows=0, usecols=None, unpack=False, ndmin=0)`
+
+- fname: 文件名
+- dtype: 数据类型
+- delimiter: 分隔符，默认为None，表示使用空格进行分隔
+- converters: 转换函数，默认为None，表示没有转换函数
+- skiprows: 跳过行数，默认为0，表示没有跳过行
+- usecols: 使用列数，默认为None，表示使用所有列
+- unpack: 是否将数据进行解包，默认为False，表示不进行解包，也就是有多少条记录，就返回多少个数组
+- ndmin: 最小维度，默认为0，表示没有最小维度
+
+#### 8.8 数组中的特殊值
+
+numpy中的特殊值：
+
+- nan: not a number, 通常表示确实的数据
+- inf: 表示正无穷大
+- -inf: 表示负无穷大
+
+```python
+import numpy as np
+
+# 创建一个nan和inf #
+a = np.nan
+b = np.inf
+c = -np.inf
+print(a, type(a))
+print(b, type(b))
+print(b > c)
+```
+
+> `nan <class 'float'>`
+>
+> `inf <class 'float'>`
+>
+> `True`
+
+```python
+np.inf==np.inf  # 正无穷与正无穷相等
+
+np.nan== np.nan  # 非数与非数不相等
+```
+
+> `True`
+>
+> `False`
+
+```python
+t = np.arange(24, dtype=float).reshape(4, 6)
+
+# 将三行四列的数改成nan
+t[3, 4] = np.nan
+print(t)
+
+# 可以使用np.count_nonzero() 来判断非零的个数
+print(np.count_nonzero(t))
+
+# 并且 np.nan != np.nan     结果 是TRUE
+# 所以我们可以使用这两个结合使用判断nan（缺失值）的个数
+print(np.count_nonzero(t != t))  # 只有nan是Ture，其余都是False
+
+# 将nan替换为0
+t[np.isnan(t)] = 0
+print(t)
+```
+
+> `[[ 0.  1.  2.  3.  4.  5.]
+>  [ 6.  7.  8.  9. 10. 11.]
+>  [12. 13. 14. 15. 16. 17.]
+>  [18. 19. 20. 21. nan 23.]]`
+> `23`
+> `1`
+> `[[ 0.  1.  2.  3.  4.  5.]
+>  [ 6.  7.  8.  9. 10. 11.]
+>  [12. 13. 14. 15. 16. 17.]
+>  [18. 19. 20. 21.  0. 23.]]`
+
+### 9. Pandas 核心数据结构
+
+#### 9.1 Series：带标签的一维数组
+
+Series 对象由“索引（index）”和“数据（values）”两个列表构成，索引默认从 **0** 开始递增。
+
+**创建**主要有以下两种方式：
+
+- 通过**列表**创建（可以手动指定索引，也可以不指定索引）
+- 通过**字典**创建（key是索引，value是值）
+
+```python
+import pandas as pd
+
+# Series的定义
+# 1. 列表创建，默认索引
+s1 = pd.Series([10, 20, 30, 40, 50])
+print(s1)
+
+print('-'*50)
+# 2. 列表创建，自定义索引
+s2 = pd.Series([10, 20, 30, 40, 50], index=['a', 'b', 'c', 'c', 'e'])
+print(s2)
+
+print('-'*50)
+# 3. 字典创建(key是索引，value是值)
+s3 = pd.Series({"Alice":85, "Bob":90, "Charlie":78, "David":92})
+print(s3)
+```
+
+> `0    10
+> 1    20
+> 2    30
+> 3    40
+> 4    50
+> dtype: int64`
+> `--------------------------------------------------`
+> `a    10
+> b    20
+> c    30
+> c    40
+> e    50
+> dtype: int64`
+> `--------------------------------------------------`
+> `Alice      85
+> Bob        90
+> Charlie    78
+> David      92
+> dtype: int64`
+
+核心**属性**有：
+
+- `index`: 索引
+- `values`: 数据
+- `dtype`: 数据类型
+- `shape`: 形状
+
+```python
+s3 = pd.Series({"Alice":85, "Bob":90, "Charlie":78, "David":92})
+
+
+print(s3.index)   # 索引 → Index(['Alice', 'Bob', 'Charlie', 'David'], dtype='object')
+print(s3.values)  # 数据 → [85 90 78 92]
+print(s3.dtype)   # 数据类型 → int64
+print(s3.shape)   # 形状（长度）→ (4,)
+```
+
+**基本操作：**
+
+```python
+# 通过索引获取值,官方不建议这么使用
+s3 = pd.Series({"Alice":85, "Bob":90, "Charlie":78, "David":92})
+print(s3["Alice"])
+print(s3["Bob"])
+
+# 通过索引修改值
+s3["Bob"] = 100
+print(s3)
+```
+
+> `85`
+> `90`
+> `Alice       85
+> Bob        100
+> Charlie     78
+> David       92
+> dtype: int64`
+
+****
+
+**索引操作**
+
+Series中的取值有两种方式：
+
+1 根据索引的名字取值
+
+- 可以直接 `对象名[索引名]` 来取值
+- 建议使用 `对象名.loc[索引名]` 来取值
+
+2 根据索引的位置取值
+
+- 可以直接使用 `对象名[位置值]` 来取值
+- 建议使用 `对象名.iloc[位置值]` 来取值
+
+3 支持使用切片的方式来取值
+
+
+
+1. index指定索引的名称
+
+```python
+import pandas as pd
+import numpy as np
+
+# s = pd.Series(['A','B','C','D'],index=['001','002','003','004'])
+
+# 创建一个Series
+s=pd.Series(['A','B','C','D'])
+
+# 1. Index指定索引的名称
+s.index = [1,2,3,4]
+print(s)
+```
+
+2. 根据索引名取值
+
+```python
+s2 = pd.Series(['A','B','C','D'],index=['001','002','003','004'])
+
+# 通过索引名取值
+print(s2['002'])          # B
+print(s2.loc['002'])      # B     #推荐的方式
+```
+
+3. 根据位置取值
+
+```python
+s2 = pd.Series(['A','B','C','D'],index=['001','002','003','004'])
+
+# 通过位置取值
+# print(s2[1])            # FutureWarning: 已被废弃
+print(s2.iloc[1])         # 推荐的方式
+```
+
+4. 取多个值
+
+```python
+# 3. 通过多个索引取多个值
+# print(s2[['002','004']])
+# print('-'*20)
+
+print(s2.loc[['002','004']])
+print('-'*20)
+
+# print(s2[[1,3]])
+
+print(s2.iloc[[1,3]])
+print('-'*30)
+```
+
+5. 根据切片取值
+
+```python
+print(s2.loc['002':'004'])        # 通过索引名取值是【左闭右闭】
+print('-'*20)
+print(s2.iloc[0:2])               # 通过索引位置取值是【左闭右开】
+```
+
+#### 9.2 DataFrame
+
+DataFrame可以理解为是：带标签的二维表格。
+
+DataFrame 类似 Excel 表格，由“行索引（index）”、“列名（columns）”和“数据（values）”组成，是 Pandas 最常用的数据结构。
+
+![image-20260225155016654](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260225155016849.png)
+
+DataFrame本质其实就是二维数组（ndarray），**创建方式**有两种：
+
+- 通过**字典**创建（键为列名，值为列数据，行索引可以自定义，也可以默认）
+- 通过**二维的ndarray**创建
+
+```python
+import pandas as pd
+import numpy as np
+
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David"],
+    "age": [20, 22, 21, 20],
+    "score": [85, 90, 78, 92],
+    "gender": ["女", "男", "男", "男"]
+}
+
+# 1. 字典创建（字典键为列名，值为列数据）
+df = pd.DataFrame(data)
+print(df)
+```
+
+> `      name  age  score gender
+> 0    Alice   20     85      女
+> 1      Bob   22     90      男
+> 2  Charlie   21     78      男
+> 3    David   20     92      男`
+
+```python
+# 2. 自定义行索引
+df = pd.DataFrame(data,index=['s1', 's2', 's3', 's4'])
+print(df)
+```
+
+> `       name  age  score gender
+> s1    Alice   20     85      女
+> s2      Bob   22     90      男
+> s3  Charlie   21     78      男
+> s4    David   20     92      男`
+
+```python
+# 3. 通过ndarray构建Datafrane
+arr1 = np.arange(12).reshape(3,4)
+df2 = pd.DataFrame(arr1,index=['a', 'b', 'c'],columns=['A', 'B', 'C', 'D'])
+print(df2)
+```
+
+> `   A  B   C   D
+> a  0  1   2   3
+> b  4  5   6   7
+> c  8  9  10  11`
+
+```python
+# 注意: 依然具有广播的特性
+data2 = {
+    "name":['zs','ls','ww'],
+    "gender":"男",
+    "height":[180,180,190]
+}
+df2 = pd.DataFrame(data2)
+df2
+```
+
+> `   name  gender  height
+> 0   zs      男     180
+> 1   ls      男     180
+> 2   ww      男     190`
+
+**核心属性**有：
+
+- `index`: 行索引
+- `columns`: 列索引（列名）
+- `values`: 数据
+- `shape`: 形状
+- `info`: 整体概览
+
+```python
+import pandas as pd
+import numpy as np
+
+# 1. 创建一个DataFrame
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David"],
+    "age": [20, 22, 21, 20],
+    "score": [85, 90, 78, 92],
+    "gender": ["女", "男", "男", "男"]
+}
+
+df = pd.DataFrame(data)
+
+# 2. 输出核心属性
+# 行索引
+print(df.index)     # 输出: RangeIndex(start=0, stop=4, step=1)
+
+# 列索引
+print(df.columns)   # 输出: Index(['name', 'age', 'score', 'gender'], dtype='object')
+
+# 数据
+print(df.values)    # 输出: [['Alice' 20 85 '女'] ['Bob' 22 90 '男'] ['Charlie' 21 78 '男'] ['David' 20 92 '男']]
+print(type(df.values))  # 输出: <class 'numpy.ndarray'>
+
+# 形状
+print(df.shape)     # 输出: (4, 4)
+
+# 数据概览
+print(df.info())    # 输出包括: 类型、行索引、列索引、数据、数据类型、内存占用等
+```
+
+**基本操作：**
+
+```python
+dict = {
+    "name": ["Alice", "Bob", "Charlie", "David"],
+    "age": [20, 22, 21, 20],
+    "score": [85, 90, 78, 92],
+    "gender": ["女", "男", "男", "男"]
+}
+df = pd.DataFrame(dict)
+
+# 1. 获取前几行数据
+print(df.head(2))
+print('-'*20)
+
+# 2. 获取后几行数据
+print(df.tail(1))
+print('-'*20)
+
+# 3. 获取指定列的数据
+name_data = df["name"]
+print(name_data)
+print(type(name_data))      # 单列数据是 Series
+print('-'*20)
+
+# 4. 获取指定多列的数据
+age_data = df[["age", "gender"]]
+print(age_data)
+print(type(age_data))       # 多列数据是 DataFrame
+print('-'*20)
+
+# 5. 增加列
+df["new_column"] = [1, 2, 3, 4]
+print(df)
+df["new_column2"] = df["new_column"] + 20
+print(df)
+print('-'*20)
+
+# 6. 删除列
+del df["new_column"]
+print(df)
+```
+
+****
+
+**索引操作**
+
+DataFrame的索引，分为行索引和列索引，每一列都构成了一个Series对象。
+
+![image-20260225162847247](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260225162847438.png)
+
+索引取值方式：
+
+1. `df.loc[]`：根据索引名来取值，如果是切片，**左闭右闭**
+2. `df.iloc[]`：根据索引的位置来取值，如果是切片，**左闭右开**
+3. 在DataFrame中，`df.loc()` 和 `df.iloc()` 默认都是取**行数据**
+
+```python
+df = pd.DataFrame(np.arange(12).reshape(3,4),index=['s1','s2','s3'],columns=['c1','c2','c3','c4'])
+print("原始数据:")
+print(df)
+
+# 1. 通过列索引获取值
+print("通过列索引获取值:")
+print(df['c2'])
+
+# 2. 通过多个列索引获取多个列的值
+print("通过多个列索引获取多个列的值")
+print(df[['c2','c4']])
+
+# 3. 通过行索引获取行数据
+print("通过行索引获取行数据:")
+print(df.loc['s2'])
+
+# 4. 通过多个行索引获取多个行数据
+print("通过多个行索引获取多个行数据:")
+print(df.loc[['s1','s3']])
+```
+
+> `原始数据:
+>     c1  c2  c3  c4
+> s1   0   1   2   3
+> s2   4   5   6   7
+> s3   8   9  10  11`
+>
+> `通过列索引获取值:
+> s1    1
+> s2    5
+> s3    9
+> Name: c2, dtype: int64`
+>
+> `通过多个列索引获取多个列的值
+>     c2  c4
+> s1   1   3
+> s2   5   7
+> s3   9  11`
+>
+> `通过行索引获取行数据:
+> c1    4
+> c2    5
+> c3    6
+> c4    7
+> Name: s2, dtype: int64`
+>
+> `通过多个行索引获取多个行数据:
+>     c1  c2  c3  c4
+> s1   0   1   2   3
+> s3   8   9  10  11`
+
+```python
+# 5. 通过位置索引获取一行的值
+print("通过位置索引获取一行的值:")
+print(df.iloc[1])
+
+# 6. 通过位置索引获取多行数据
+print("通过位置索引获取多行数据:")
+print(df.iloc[[0,2]])
+
+# 7. 获取具体位置的值
+print("获取具体位置的值:")
+print(df.iloc[1,2])         # 前面是行，后面是列
+# print(df.iloc[1][2])      # FutureWarning
+```
+
+> `通过位置索引获取一行的值:
+> c1    4
+> c2    5
+> c3    6
+> c4    7
+> Name: s2, dtype: int64`
+>
+> `通过位置索引获取多行数据:
+>     c1  c2  c3  c4
+> s1   0   1   2   3
+> s3   8   9  10  11`
+>
+> `获取具体位置的值:
+> 6`
+
+```python
+# 8. 通过位置索引切片获取数据
+print("通过位置索引切片获取数据:")
+print(df.iloc[0:2,1:3])     # 前面是行，后面是列，左闭右开
+
+# 9. 通过名字索引切片获取数据
+print("通过名字索引切片获取数据:")
+print(df.loc['s1':'s3','c2':'c4'])  # 前面是行，后面是列，左闭右闭
+
+# 10. 一次取多个不连续的行或者列
+print("一次取多个不连续的行或者列:")
+print(df.iloc[[1,2],[0,3]])  # 前面是行，后面是列
+#改为loc实现上一行
+print(df.loc[['s2','s3'],['c1','c4']])
+```
+
+> `通过位置索引切片获取数据:
+>     c2  c3
+> s1   1   2
+> s2   5   6`
+>
+> `通过名字索引切片获取数据:
+>     c2  c3  c4
+> s1   1   2   3
+> s2   5   6   7
+> s3   9  10  11`
+>
+> `一次取多个不连续的行或者列:`
+>
+> `    c1  c4
+> s2   4   7
+> s3   8  11`
+>
+> `    c1  c4
+> s2   4   7
+> s3   8  11`
+
+### 10. Pandas 数据清洗
+
+#### 10.1 重复值处理
+
+**1. 检测重复值 `duplicated()`**
+
+```python
+data = {
+    "name": ["Alice", "Alice", "Charlie", "David", "Alice", "Charlie"],
+    "age": [20, 22, 21, 20, 20, 21],
+    "score": [85, 90, 78, 92, 85, 78],
+    "gender": ["女", "男", "男", "男", "女", "男"]
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4', 's5', 's6'], columns=['name', 'age', 'score', 'gender'])
+print(df)
+print('-'*20)
+
+# 1. 检测重复值
+print(df.duplicated())      # 返回布尔Series，True表示重复行
+print('-'*20)
+
+# 2. 指定列检测重复值(可以指定多列)
+# 参数 keep, 默认值为'first', 表示只保留第一个重复行, 'last'表示只保留最后一个重复行, False表示标记所有重复行
+df_dup_by_col = df.duplicated(subset=['age'], keep='first')
+print(df_dup_by_col)
+```
+
+> `       name  age  score gender
+> s1    Alice   20     85      女
+> s2    Alice   22     90      男
+> s3  Charlie   21     78      男
+> s4    David   20     92      男
+> s5    Alice   20     85      女
+> s6  Charlie   21     78      男`
+> `--------------------`
+> `s1    False
+> s2    False
+> s3    False
+> s4    False
+> s5     True
+> s6     True
+> dtype: bool`
+> `--------------------`
+> `s1    False
+> s2    False
+> s3    False
+> s4     True
+> s5     True
+> s6     True
+> dtype: bool`
+
+**2. 删除重复值 `drop_duplicates()`**
+
+```python
+# 创建一个数据表
+data = {
+    "name": ["Alice", "Alice", "Charlie", "David", "Alice", "Charlie"],
+    "age": [20, 22, 21, 20, 20, 21],
+    "score": [85, 90, 78, 92, 85, 78],
+    "gender": ["女", "男", "男", "男", "女", "男"]
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4', 's5', 's6'], columns=['name', 'age', 'score', 'gender'])
+print("原数据:")
+print(df)
+
+# 1. 删除完全重复的行
+df_drop_dup = df.drop_duplicates()
+print("删除完全重复的行:")
+print(df_drop_dup)
+
+# 2. 删除部分列重复的行
+df_drop_dup_by_col = df.drop_duplicates(subset=['name'], keep='first')
+print("删除部分列重复的行:")
+print(df_drop_dup_by_col)
+
+# 3. 直接在原数据上删除
+df.drop_duplicates(inplace=True)
+print("直接在原数据上删除:")
+print(df)
+```
+
+> `原数据:
+>        name  age  score gender
+> s1    Alice   20     85      女
+> s2    Alice   22     90      男
+> s3  Charlie   21     78      男
+> s4    David   20     92      男
+> s5    Alice   20     85      女
+> s6  Charlie   21     78      男`
+> `删除完全重复的行:
+>        name  age  score gender
+> s1    Alice   20     85      女
+> s2    Alice   22     90      男
+> s3  Charlie   21     78      男
+> s4    David   20     92      男`
+> `删除部分列重复的行:
+>        name  age  score gender
+> s1    Alice   20     85      女
+> s3  Charlie   21     78      男
+> s4    David   20     92      男`
+> `直接在原数据上删除:
+>        name  age  score gender
+> s1    Alice   20     85      女
+> s2    Alice   22     90      男
+> s3  Charlie   21     78      男
+> s4    David   20     92      男`
+
+#### 10.2 缺失值处理
+
+先评估缺失程度，再选修复策略（删除 / 填充 / 插值）
+
+**1. 检测缺失值 `isnull()`**
+
+```python
+# 1. 创建一个数据表
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank"],
+    "age": [20, 22, 21, 20, 20, np.nan],
+    "score": [85, 90, np.nan, 92, 85, np.nan],
+    "gender": ["女", "男", "男", np.nan, np.nan,np.nan]
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4', 's5', 's6'], columns=['name', 'age', 'score', 'gender'])
+print(df)
+
+# 2. 检测缺失值
+print(df.isnull())
+
+# 3. 计算缺失个数
+print("每一列缺失个数:")
+print(df.isnull().sum())
+
+print("每一行缺失个数:")
+print(df.isnull().sum(axis=1))
+
+# 4. 计算缺失率
+print("每一列缺失率:")
+print(df.isnull().sum() / len(df))
+
+print("每一行缺失率:")
+print(df.isnull().sum(axis=1) / len(df.columns) )
+```
+
+> `       name   age  score gender
+> s1    Alice  20.0   85.0      女
+> s2      Bob  22.0   90.0      男
+> s3  Charlie  21.0    NaN      男
+> s4    David  20.0   92.0    NaN
+> s5      Eva  20.0   85.0    NaN
+> s6    Frank   NaN    NaN    NaN`
+>
+> `     name    age  score  gender
+> s1  False  False  False   False
+> s2  False  False  False   False
+> s3  False  False   True   False
+> s4  False  False  False    True
+> s5  False  False  False    True
+> s6  False   True   True    True`
+>
+> `每一列缺失个数:
+> name      0
+> age       1
+> score     2
+> gender    3
+> dtype: int64`
+>
+> `每一行缺失个数:
+> s1    0
+> s2    0
+> s3    1
+> s4    1
+> s5    1
+> s6    3
+> dtype: int64`
+>
+> `每一列缺失率:
+> name      0.000000
+> age       0.166667
+> score     0.333333
+> gender    0.500000
+> dtype: float64`
+>
+> `每一行缺失率:
+> s1    0.00
+> s2    0.00
+> s3    0.25
+> s4    0.25
+> s5    0.25
+> s6    0.75
+> dtype: float64`
+
+**2. 删除缺失值 `dropna()`**
+
+```python
+# 1. 创建一个数据表
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank"],
+    "age": [20, 22, 21, 20, 20, np.nan],
+    "score": [85, 90, np.nan, 92, 85, np.nan],
+    "gender": ["女", "男", "男", np.nan, np.nan,np.nan]
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4', 's5', 's6'], columns=['name', 'age', 'score', 'gender'])
+print("原数据：")
+print(df)
+
+# 2. 删除含有缺失值的行或列(谨慎操作，可能会丢失大量数据)
+df_drop_na = df.dropna()
+print("删除含有缺失值的行:")
+print(df_drop_na)
+
+df_drop_na_by_col = df.dropna(axis=1)
+print("删除含有缺失值的列:")
+print(df_drop_na_by_col)
+
+# 3. 删除 score数据缺失的行
+df_drop_na_by_col = df.dropna(subset=['score'])
+print("删除 score数据缺失的行:")
+print(df_drop_na_by_col)
+```
+
+> `原数据：
+>        name   age  score gender
+> s1    Alice  20.0   85.0      女
+> s2      Bob  22.0   90.0      男
+> s3  Charlie  21.0    NaN      男
+> s4    David  20.0   92.0    NaN
+> s5      Eva  20.0   85.0    NaN
+> s6    Frank   NaN    NaN    NaN`
+>
+> `删除含有缺失值的行:
+>      name   age  score gender
+> s1  Alice  20.0   85.0      女
+> s2    Bob  22.0   90.0      男`
+>
+> `删除含有缺失值的列:
+>        name
+> s1    Alice
+> s2      Bob
+> s3  Charlie
+> s4    David
+> s5      Eva
+> s6    Frank`
+>
+> `删除 score数据缺失的行:
+>      name   age  score gender
+> s1  Alice  20.0   85.0      女
+> s2    Bob  22.0   90.0      男
+> s4  David  20.0   92.0    NaN
+> s5    Eva  20.0   85.0    NaN`
+
+**3. 填充缺失值 `fillna()`**
+
+```python
+#填充缺失值
+# 1. 创建一个数据表
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank"],
+    "age": [20, 22, 21, 20, 20, np.nan],
+    "score": [85, 90, np.nan, 92, 85, np.nan],
+    "gender": ["女", "男", "男", np.nan, np.nan,np.nan]
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4', 's5', 's6'], columns=['name', 'age', 'score', 'gender'])
+print("原数据:")
+print(df)
+
+# 2. 填充全局缺失值
+df_fill_na = df.fillna(0)
+print("填充缺失值为0:")
+print(df_fill_na)
+
+# 3. 填充某一列的缺失值
+df_fill_na_by_col = df.fillna({'gender': '男','score':80})
+print("填充【gender】缺失值为男，【score】缺失值为80:")
+print(df_fill_na_by_col)
+
+
+# 4.单独把某列取出来，填充缺失值
+df['score'] = df['score'].fillna(80)
+print("单独把【score】列取出来，填充缺失值为80:")
+print(df)
+```
+
+> `原数据:
+>        name   age  score gender
+> s1    Alice  20.0   85.0      女
+> s2      Bob  22.0   90.0      男
+> s3  Charlie  21.0    NaN      男
+> s4    David  20.0   92.0    NaN
+> s5      Eva  20.0   85.0    NaN
+> s6    Frank   NaN    NaN    NaN`
+>
+> `填充缺失值为0:
+>        name   age  score gender
+> s1    Alice  20.0   85.0      女
+> s2      Bob  22.0   90.0      男
+> s3  Charlie  21.0    0.0      男
+> s4    David  20.0   92.0      0
+> s5      Eva  20.0   85.0      0
+> s6    Frank   0.0    0.0      0`
+>
+> `填充【gender】缺失值为男，【score】缺失值为80:
+>        name   age  score gender
+> s1    Alice  20.0   85.0      女
+> s2      Bob  22.0   90.0      男
+> s3  Charlie  21.0   80.0      男
+> s4    David  20.0   92.0      男
+> s5      Eva  20.0   85.0      男
+> s6    Frank   NaN   80.0      男`
+>
+> `单独把【score】列取出来，填充缺失值为80:
+>        name   age  score gender
+> s1    Alice  20.0   85.0      女
+> s2      Bob  22.0   90.0      男
+> s3  Charlie  21.0   80.0      男
+> s4    David  20.0   92.0    NaN
+> s5      Eva  20.0   85.0    NaN
+> s6    Frank   NaN   80.0    NaN`
+
+## <span style='color:red'>Day10</span>
+
+### 1. Pandas 数据转换：函数应用
+
+#### 1.1 `apply()`
+
+基本语法：==`Series.apply(func, args=(), **kwargs)`==
+
+- 既支持 **Series**（一维），也支持**DataFrame**（二维）
+- 作用：按规则批量处理数据
+
+**处理 Series数据**
+
+```python
+# 使用案例
+# 创建一个学生表
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David"],
+    "age": [20, 22, 21, 20],
+    "score": [85, 90, 78, 92],
+    "gender": ["女", "男", "男", "男"]
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4'], columns=['name', 'age', 'score', 'gender'])
+print(df)
+print(type(df['age'])) # 某一列取出是 Series
+
+# 比如需要把年龄数据乘以2
+def mul_two(x):
+    return x * 2
+
+df['age'] = df['age'].apply(mul_two)
+# 再次打印一下看看变化
+print(df)
+
+# 也可以直接使用匿名函数
+df['age'] = df['age'].apply(lambda x: x * 2)
+print(df)
+```
+
+> `       name  age  score gender
+> s1    Alice   20     85      女
+> s2      Bob   22     90      男
+> s3  Charlie   21     78      男
+> s4    David   20     92      男`
+>
+> `<class 'pandas.core.series.Series'>`
+>
+> `    name  age  score gender
+> s1    Alice   40     85      女
+> s2      Bob   44     90      男
+> s3  Charlie   42     78      男
+> s4    David   40     92      男`
+>
+> `    name  age  score gender
+> s1    Alice   80     85      女
+> s2      Bob   88     90      男
+> s3  Charlie   84     78      男
+> s4    David   80     92      男`
+
+**处理 DataFrame 数据**
+
+```python
+df = pd.DataFrame(np.arange(12).reshape(3,4), index=['s1', 's2', 's3'], columns=['c1', 'c2', 'c3', 'c4'])
+print(df)
+
+# 1. 统计每个列的数据个数
+print(df.apply(lambda x: x.count(), axis=0))        # 默认轴是0，即列
+
+# 2. 统计每个列的最大值
+print(df.apply(lambda x: x.max(), axis=0))          # 默认轴是0，即列
+
+# 3. 统计每个行的数据个数
+print(df.apply(lambda x: x.count(), axis=1))        # 轴1, 是行
+```
+
+> `    c1  c2  c3  c4
+> s1   0   1   2   3
+> s2   4   5   6   7
+> s3   8   9  10  11`
+>
+> `c1    3
+> c2    3
+> c3    3
+> c4    3
+> dtype: int64`
+>
+> `c1     8
+> c2     9
+> c3    10
+> c4    11
+> dtype: int64`
+>
+> `s1    4
+> s2    4
+> s3    4
+> dtype: int64`
+
+#### 1.2 `map()`
+
+map 映射函数，核心作用是 “按规则逐元素转换数据”，一般用于 **Series**
+
+语法格式：==`Series.map(arg, na_action=None)`==
+- arg：可传入字典，函数(匿名函数)
+- na_action：缺失值处理参数，默认为None
+
+```python
+# 使用案例
+# 创建一个学生二维表
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David"],
+    "age": [20, 22, 21, 20],
+    "score": [85, 90, 78, 92],
+    "gender": ["女", "男", "男", "男"]
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4'], columns=['name', 'age', 'score', 'gender'])
+print(df)
+
+# 案例1: 将性别数据映射为male和female
+# 通过字典映射
+gender_map = {
+    "男": "male",
+    "女": "female"
+}
+df['gender'] = df['gender'].map(gender_map)
+print(df)
+
+# 案例2: 将性别数据映射为1和0
+# 通过函数映射
+df['gender'] = df['gender'].map(lambda x: 1 if x == "male" else 0)
+print(df)
+
+# 案例3: 给所有的数据乘以2
+df2 = pd.DataFrame(np.arange(12).reshape(3,4), index=['s1', 's2', 's3'], columns=['c1', 'c2', 'c3', 'c4'])
+print(df2)
+df2 = df2.map(lambda x: x * 2)
+print(df2)
+```
+
+> `       name  age  score gender
+> s1    Alice   20     85      女
+> s2      Bob   22     90      男
+> s3  Charlie   21     78      男
+> s4    David   20     92      男
+> ` 
+>
+> `       name  age  score  gender
+> s1    Alice   20     85  female
+> s2      Bob   22     90    male
+> s3  Charlie   21     78    male
+> s4    David   20     92    male
+> ` 
+>
+> `       name  age  score  gender
+> s1    Alice   20     85       0
+> s2      Bob   22     90       1
+> s3  Charlie   21     78       1
+> s4    David   20     92       1
+> ` 
+>
+> `    c1  c2  c3  c4
+> s1   0   1   2   3
+> s2   4   5   6   7
+> s3   8   9  10  11
+> ` 
+>
+> `    c1  c2  c3  c4
+> s1   0   2   4   6
+> s2   8  10  12  14
+> s3  16  18  20  22`
+
+### 2. Pandas 数据分析：统计与计算
+
+#### 2.1 描述性统计 `df.describe()`
+
+`describe()` 是 pandas 提供的 **描述性统计函数**，用于快速查看数据的整体情况。
+
+不同数据类型，`describe()` 给出的统计信息是不一样的：
+
+- **数值型列**（int / float）：均值、标准差、最大值等
+- **object 列（字符串 / 类别）**：出现频率、唯一值数量等
+
+```python
+# 创建一个数据表
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank"],
+    "age": [20, 22, 21, 20, 20, 30],
+    "score": [85, 90, 88, 92, 85, 72],
+    "gender": ["女", "男", "男", '男', '女', '男']
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4', 's5', 's6'], columns=['name', 'age', 'score', 'gender'])
+print(df)
+
+# 1. 单列统计
+print("单列统计:")
+print(df['age'].describe())
+print('-'*20)
+
+# 2. 多列统计
+print("多列统计:")
+print(df[['age', 'score']].describe())
+print('-'*20)
+
+# 3. 所有列进行统计(只会对，也只能对数值列进行统计)
+print(df.describe())
+
+# 4. 常用统计函数
+print("常用统计函数:")
+print(df['age'].mean())        # 平均数
+print(df['age'].median())      # 中位数
+print(df['age'].min())         # 最小值
+print(df['age'].max())         # 最大值
+print(df['age'].std())         # 标准差
+print(df['age'].sum())         # 求和
+```
+
+> `        name  age  score  gender
+> s1    Alice   20     85      女
+> s2      Bob   22     90      男
+> s3  Charlie   21     88      男
+> s4    David   20     92      男
+> s5      Eva   20     85      女
+> s6    Frank   30     72      男`
+> 
+> `单列统计:
+> count     6.000000
+> mean     22.166667
+> std       3.920034
+> min      20.000000
+> 25%      20.000000
+> 50%      20.500000
+> 75%      21.750000
+> max      30.000000
+> Name: age, dtype: float64`
+> 
+> `--------------------`
+> 
+> `多列统计:
+>           age      score
+> count   6.000000   6.000000
+> mean   22.166667  85.333333
+> std     3.920034   7.089899
+> min    20.000000  72.000000
+> 25%    20.000000  85.000000
+> 50%    20.500000  86.500000
+> 75%    21.750000  89.500000
+> max    30.000000  92.000000`
+> 
+> `--------------------`
+> 
+> `          age      score
+> count   6.000000   6.000000
+> mean   22.166667  85.333333
+> std     3.920034   7.089899
+> min    20.000000  72.000000
+> 25%    20.000000  85.000000
+> 50%    20.500000  86.500000
+> 75%    21.750000  89.500000
+> max    30.000000  92.000000`
+> 
+> `常用统计函数:`
+> `22.166666666666668`
+> `20.5`
+> `20`
+> `30`
+> `3.920034013457877`
+> `133`
+
+`include` 用来 **指定要统计哪些数据类型的列**。
+
+常见的有：
+
+- `df.describe(include=['number'])   # 数值型`
+- `df.describe(include=['object'])   # 字符串/类别型`
+- `df.describe(include='all')        # 所有列`
+
+不加`include` 的默认情况下：
+
+- **只统计数值型列**
+- `object` 列会被直接忽略
+
+对于 `object` 类型列，`describe()` **不会计算均值、最大值这些数值统计**，而是返回下面 4 项：
+
+| 字段     | 含义                 |
+| -------- | -------------------- |
+| `count`  | 非空值数量           |
+| `unique` | 不重复值的个数       |
+| `top`    | 出现次数最多的值     |
+| `freq`   | `top` 对应的出现次数 |
+
+```python
+print(df.describe(include=['object']))  # 对数据类型为 object 的列进行统计描述
+```
+
+> `         name gender
+> count       6      6
+> unique      6      2
+> top     Alice      男
+> freq        1      4`
+
+#### 2.2 聚合计算 `agg()`
+
+对同一列 / 多列同时应用多个统计函数，高效生成汇总结果。
+
+```python
+# 创建一个数据表
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank"],
+    "age": [20, 22, 21, 20, 20, 30],
+    "score": [85, 90, 88, 92, 85, 72],
+    "gender": ["女", "男", "男", '男', '女', '男']
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4', 's5', 's6'], columns=['name', 'age', 'score', 'gender'])
+print(df)
+
+# 1. 单列多函数聚合
+score_stats = df['score'].agg([
+    "mean", "max", "min"
+])
+print(score_stats)
+
+# 2. 多列分别聚合
+multi_col_stats = df.agg({
+    "age": ["mean", "count"],    # age列：均值、非空计数
+    "score": ["median", "std"]   # score列：中位数、标准差
+})
+print(multi_col_stats)
+```
+
+> `       name  age  score gender
+> s1    Alice   20     85      女
+> s2      Bob   22     90      男
+> s3  Charlie   21     88      男
+> s4    David   20     92      男
+> s5      Eva   20     85      女
+> s6    Frank   30     72      男`
+>
+> `mean    85.333333
+> max     92.000000
+> min     72.000000
+> Name: score, dtype: float64
+> `
+>
+> `              age      score
+> mean    22.166667        NaN
+> count    6.000000        NaN
+> median        NaN  86.500000
+> std           NaN   7.089899`
+
+### 3. `add_prefix()`：pandas 重命名方法
+
+基本语法：==`对象.add_prefix('前缀')`==
+
+作用：在现有列名（或索引名）前面统一加上一个**前缀字符串**
+
+### 4. Pandas 分组
+
+```python
+# 创建一个数据表
+data = {
+    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank"],
+    "age": [20, 22, 21, 20, 20, 30],
+    "score": [85, 90, 88, 92, 82, 72],
+    "gender": ["女", "男", "男", '男', '女', '男']
+}
+df = pd.DataFrame(data, index=['s1', 's2', 's3', 's4', 's5', 's6'], columns=['name', 'age', 'score', 'gender'])
+print(df)
+
+# 1. 分组
+group_by_gender = df.groupby('gender')
+print(group_by_gender)  # 分组后不聚合，获得的只是一个分组后的对象
+
+# 2. 分组之后统计
+print("分组之后统计:")
+print(group_by_gender.describe())
+
+# 3. 分组之后求均值
+print("分组之后求均值:")
+mean_score = df.groupby('gender')['score'].mean().add_prefix('mean_')  # add_prefix('mean_') 给结果的“列名或索引名”加前缀'mean_'
+print(mean_score)
+
+
+```
+
+> `       name  age  score gender
+> s1    Alice   20     85      女
+> s2      Bob   22     90      男
+> s3  Charlie   21     88      男
+> s4    David   20     92      男
+> s5      Eva   20     82      女
+> s6    Frank   30     72      男`
+> 
+> `<pandas.core.groupby.generic.DataFrameGroupBy object at 0x000001D2E7CD9E80>`
+> 
+> `分组之后统计:
+>            age                                                    score        \
+>            count   mean     std    min    25%   50%   75%   max   count  mean   
+> gender                                                                     
+> 女        2.0  20.00  0.000000  20.0  20.00  20.0  20.0  20.0   2.0  83.5   
+> 男        4.0  23.25  4.573474  20.0  20.75  21.5  24.0  30.0   4.0  85.5   `
+>
+> `             std   min    25%   50%    75%   max  
+> gender                                            
+> 女       2.121320  82.0  82.75  83.5  84.25  85.0  
+> 男       9.146948  72.0  84.00  89.0  90.50  92.0  `
+> 
+> `分组之后求均值:
+> gender
+> mean_女    83.5
+> mean_男    85.5
+> Name: score, dtype: float64`
+
+`agg()`和`transform()`都能传入多个函数，对同一列 / 多列同时应用多个统计函数（包括自定义函数）
+
+区别在结果不同
+
+```python
+df.groupby("gender")["score"].agg('max')
+```
+
+输出结果：
+
+<img src="C:/Users/MSI-NB/AppData/Roaming/Typora/typora-user-images/image-20260226011510287.png" alt="image-20260226011510287" style="zoom:80%;" />
+
+> 按分组给出最大值
+
+```python
+df.groupby("gender")["score"].transform('max')
+```
+
+输出结果：
+
+![image-20260226011629001](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260226011629200.png)
+
+> 与原DF格式一致，给出每个样例所在组的最大值
+
+```python
+# 4. 分组之后进行转换
+# 需求: 按性别分组, 求每个组的最高分 (传入已有聚合函数)
+df["max_score"] = df.groupby("gender")["score"].transform("max")
+print(df[["name", "gender", "score", "max_score"]])
+
+# 需求: 按性别分组, 计算每个学生分数在组内的降序排名 (传入自定义函数)
+# ascending=False 表示降序
+df["score_rank"] = df.groupby("gender")["score"].transform(lambda group: group.rank(ascending=False))
+print(df[["name", "gender", "score", "score_rank"]])
+```
+
+> `       name   gender   score   max_score
+> s1    Alice      女     85         85
+> s2      Bob      男     90         92
+> s3  Charlie      男     88         92
+> s4    David      男     92         92
+> s5      Eva      女     82         85
+> s6    Frank      男     72         92`
+>
+> `       name   gender   score   score_rank
+> s1    Alice      女     85         1.0
+> s2      Bob      男     90         2.0
+> s3  Charlie      男     88         3.0
+> s4    David      男     92         1.0
+> s5      Eva      女     82         2.0
+> s6    Frank      男     72         4.0`
+
+### 5. `rank()`方法
+
+`rank()` 是 pandas 中用于 **计算排名** 的方法：
+
+- 给每个值分配一个“名次”
+- 默认 **从小到大排名**
+
+语法：==`group.rank(ascending=False, method="average")`==
+
+- `ascending`：升序 / 降序
+    - `ascending=True`（默认）：升序，小的排名靠前
+    - `ascending=False`：降序，大的排名靠前
+- `method`：并列值怎么排
+
+`method`常见取值如下：
+
+| method    | 含义                   | 示例：对[92, 88, 88, 75]中的（88, 88） |
+| --------- | ---------------------- | -------------------------------------- |
+| `average` | 并列取平均名次（默认） | 2.5, 2.5                               |
+| `dense`   | 紧凑排名，不跳号       | 2, 2                                   |
+| `min`     | 并列取最小名次         | 2, 2                                   |
+| `max`     | 并列取最大名次         | 3, 3                                   |
+| `first`   | 按出现顺序             | 2, 3                                   |
