@@ -2804,8 +2804,6 @@ import numpy as np
 # 创建一个一维ndarray
 arr1 = np.array([1, 2, 3])
 
-王道程序员训练营
-
 print(arr1)
 print(type(arr1))
 
@@ -2827,9 +2825,11 @@ print(type(arr3))
 **使用函数创建特殊数组**
 
 ```python
-np.zeros((2))    # 创建一个2行3列全0数组
-np.ones((3, 2))    # 创建一个3行2列全1数组
-np.empty((2,3))    # 创建一个2行3列，元素值内容随机且依赖于内存状态的数组
+print(np.zeros((2)))  # 创建一个2行3列全0数组
+print(np.ones((2, 3)))  # 创建一个2行3列全1数组
+print(np.full((2, 3), 10))  # 创建一个2行3列全10数组
+print(np.eye(3))  # 创建一个3行3列单位矩阵
+print(np.empty((2, 3)))  # 创建一个2行3列空数组
 ```
 
 > 注意：默认创建的数组中的数据类型(dtype)都是: float64
@@ -2871,7 +2871,7 @@ arr4 = np.matrix([[1, 2, 3], [4, 5, 6]])
 import numpy as np
 
 # 1. 创建一个0-1的【随机数】矩阵，矩阵是2行3列
-arr5 = np.random.randint((2,3))
+arr5 = np.random.random((2,3))
 print(arr5)
 print(type(arr5))
 
@@ -4533,11 +4533,11 @@ print(df)
 
 ### 1. Pandas 数据转换：函数应用
 
-#### 1.1 `apply()`
+#### 1.1 `apply()`应用函数
 
 基本语法：==`Series.apply(func, args=(), **kwargs)`==
 
-- 既支持 **Series**（一维），也支持**DataFrame**（二维）
+- 既支持 **Series**（一维），也支持**DataFrame**（二维） 
 - 作用：按规则批量处理数据
 
 **处理 Series数据**
@@ -4626,7 +4626,7 @@ print(df.apply(lambda x: x.count(), axis=1))        # 轴1, 是行
 > s3    4
 > dtype: int64`
 
-#### 1.2 `map()`
+#### 1.2 `map()`映射
 
 map 映射函数，核心作用是 “按规则逐元素转换数据”，一般用于 **Series**
 
@@ -5015,3 +5015,252 @@ print(df[["name", "gender", "score", "score_rank"]])
 | `min`     | 并列取最小名次         | 2, 2                                   |
 | `max`     | 并列取最大名次         | 3, 3                                   |
 | `first`   | 按出现顺序             | 2, 3                                   |
+
+### 6. 独热编码（one-hot）
+
+独热码是一种**一位有效编码**，其核心特征是：在一组编码中，**任意时刻只有一个二进制位为 1，其余所有位均为 0**。这种编码方式不依赖数值大小表示信息，而是通过“哪一位为 1”来唯一标识一个状态或类别，因此也被称为“独一热码”或“一位有效码”。
+
+- 例如，“猫、狗、鸟”三类标签，独热码表示为 `[1,0,0]`（猫）、`[0,1,0]`（狗）、`[0,0,1]`（鸟）
+- 避免标签的“数值大小关联”（如二进制码 `00`、`01`、`10` 可能被模型误解为“猫 < 狗 < 鸟”，而独热码无此问题），同时适配神经网络的输出层（如 Softmax 层输出与独热码标签的交叉熵计算）
+
+**优势**：解码简单，时序性能好，适合状态数较少、对速度要求高的场景
+
+![image-20260226201515419](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260226201515663.png)
+
+### 7. scikit-learn 特征提取
+
+在sklearn中常见的特征提取工具：
+
+- 字典数据：DictVectorizer
+- 文本数据：CountVectorizer、TfidfVectorizer
+- 图像数据：PatchExtractor（了解，参考官方文档）
+
+#### 7.1 从字典加载特征 `DictVectorizer()`
+
+用于处理**字典形式特征数据**，核心功能是将由字典组成的特征列表转换为机器学习模型可直接使用的**数值矩阵**（特征向量）。
+
+```python
+# 导入字典提取器
+from sklearn.feature_extraction import DictVectorizer
+import pandas as pd
+
+# 准备字典数据
+data = [
+    {'颜色': '红', '尺寸': '大', '价格': 100},
+    {'颜色': '蓝', '尺寸': '中', '价格': 80},
+    {'颜色': '红', '尺寸': '小', '价格': 50}
+]
+
+# 初始化字典提取器
+# sparse=False 表示返回的矩阵是二维的，而不是稀疏矩阵
+# sparse=True 默认值，返回的矩阵是稀疏矩阵，稀疏矩阵只保存非零的元素，可以节省内存
+# 稀疏矩阵：矩阵中，大多数值都为0的矩阵
+dict_vec = DictVectorizer(sparse=False)
+
+# 提取特征
+X = dict_vec.fit_transform(data)
+
+# 查看结果
+print(X)
+
+# 查看特征名
+print(dict_vec.get_feature_names_out())
+
+# 结合DataFrame查看结果
+pd.DataFrame(X, columns=dict_vec.get_feature_names_out())
+```
+
+**结果说明：**
+
+- 数值特征“价格”直接保留原值（第一列）；
+- 类别特征“颜色”被独热编码为“颜色=红”“颜色=蓝”
+- 类别特征“尺寸”被独热编码为“尺寸=大”“尺寸=中”“尺寸=小”
+
+<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260226211606941.png" alt="image-20260226211606685" style="zoom:80%;" />
+
+#### 7.2 从英文文本加载特征 `CountVectorizer()`
+
+在自然语言处理（NLP）中，`CountVectorizer` 是 scikit-learn 库中常用的文本特征提取工具，它的核心功能是将英文文本（或其他语言文本）转换为**基于词频的数值特征矩阵**（即统计每个词在文档中出现的次数）。
+
+```python
+# 举个例子
+
+# 导入包
+from sklearn.feature_extraction.text import CountVectorizer
+
+# 样本文本（3个文档）
+documents = [
+    "I love machine learning. Machine learning is interesting.",
+    "I love coding. Coding is fun and useful.",
+    "Machine learning and coding are my favorite skills."
+]
+
+# 创建CountVectorizer对象（默认参数：小写化文本、按空格/标点分词、不过滤停用词）
+# min_df/max_df参数解释：
+# min_df: 最小文档频率，即单词至少出现的次数或比例，低于此阈值的单词将被忽略
+# max_df: 最大文档频率，即单词在文档中的次数或比例，高于此阈值的单词将被忽略
+# 当min_df和max_df都为整数时，表示单词出现的次数，当min_df和max_df都为小数时，表示单词在文档中的比例
+count_vec = CountVectorizer(min_df = 2)
+
+# 训练并转换文档
+X = count_vec.fit_transform(documents)
+
+# 查看结果
+print(X.toarray())
+
+# 查看特征名
+print(count_vec.get_feature_names_out())
+
+# 结合DataFrame查看
+df = pd.DataFrame(X.toarray(), columns = count_vec.get_feature_names_out())
+print(df)
+```
+
+此示例中，不设置 “ min_df ” 值时会发现这种方法认为 “I” 不是一个有含义的单词（特征名中没有 “I” ），不计算它的词频，因此这种方法适用于分类任务，而不适用于大模型的生成场景。
+
+#### 7.3 从中文文本加载特征
+
+对于中文词汇，`CountVectorizer`并没有那么“聪明”，不能正确的对中文进行分词之后再提取特征。
+
+所以需要我们**先对中文进行分词，然后再使用`CountVectorizer()`提取特征**。
+
+```python
+# 导入分词
+import jieba
+# 导入特征提取对象
+from sklearn.feature_extraction.text import CountVectorizer
+# 导入pandas
+import pandas as pd
+
+# 1. 文本
+documents = [
+    "人生苦短，我喜欢 python",
+    "人生漫长，不用 python python",
+    "人生漫漫，不用 python python python"
+]
+
+# 2. 文本分词，得到一个分词之后的文本列表
+# 使用jieba分词，把每个句子分词，然后通过空格再合并成一个句子
+# CountVectorizer()是根据空格分词的，所以需要添加空格
+cut_documents = [ " ".join(jieba.cut(document)) for document in documents]
+print(cut_documents)
+
+# 3. 创建特征提取对象
+vectorizer = CountVectorizer(min_df=2)
+
+# 4. 创建特征矩阵
+X = vectorizer.fit_transform(cut_documents)
+
+# 5. 使用DataFrame查看结果
+pd.DataFrame(X.toarray(), columns=vectorizer.get_feature_names_out())
+```
+
+#### 7.4 中文分词工具
+
+在 Python 中，中文分词是自然语言处理（NLP）的基础任务之一，常用的工具库有很多，各自有不同的特点和适用场景。以下是最常用的几种中文分词工具及其使用方法：
+
+- **jieba（结巴分词）**
+    最流行的中文分词工具之一，轻量、高效，支持三种分词模式，可自定义词典，支持词性标注
+- **SnowNLP**
+- **THULAC（清华研发）**
+- **pyltp（哈工大研发）**
+
+**安装**
+
+```python
+pip install jieba
+```
+
+**使用**
+
+```python
+import jieba
+
+text = "我爱自然语言处理"
+
+# 得到的结果是一个可迭代的生成器对象
+result = jieba.cut(text)
+# for i in result:
+#     print(i)
+
+# 合并
+text = " ".join(result)
+print(text)
+```
+
+> jieba.lcut 和 jieba.cut 的区别如下：
+>
+> - jieba.lcut(sentence) 直接返回分词后的列表。
+> - jieba.cut(sentence) 返回的是一个可迭代的生成器，需要用 list() 转换成列表才可查看全部分词结果。
+
+#### 7.5 TF-IDFVectorizer
+
+TF-IDFVectorizer
+
+`TF-IDFVectorizer` 是 scikit-learn 中另一种常用的文本特征提取工具，它在 **词频（TF）** 的基础上引入了 **逆文档频率（IDF）** 权重，能更合理地衡量词语在文本中的“重要性”，避免高频但无实际意义的词（如 “the”、“is”）过度影响特征。
+
+****
+
+**1. TF-IDF是什么？**
+
+TF-IDF 是 **Term Frequency – Inverse Document Frequency** 的缩写，由两部分组成：
+
+- **词频（TF）**：某个词在当前文档中出现的频率，计算公式为：
+
+  \[
+  TF(t, d) = \frac{\text{词}t\text{在文档}d\text{中出现的次数}}{\text{文档}d\text{的总词数}}
+  \]
+
+  实际实现中，scikit-learn 默认直接用“出现次数”作为 TF，而非频率，更简单直观。
+
+- **逆文档频率（IDF）**：衡量一个词的**“稀有度”**——如果一个词在多数文档中都出现，它的 IDF 会较低（比如 “is”、“and”）；如果只在少数文档中出现，IDF 会较高（比如 “machine learning”、“coding”）。计算公式为：
+\[
+  IDF(t) = \log\left(\frac{\text{总文档数}}{\text{包含词}t\text{的文档数} + 1}\right)
+  \]
+  
+分母加 1 是为了避免“包含词 t 的文档数为 0（测试集）”时的除零错误，即“平滑处理”，  log 是以 10 为底的。
+
+最终，**TF-IDF 值 = TF × IDF**，它综合了词在当前文档中的“出现频率”和在所有文档中的“稀有度”，值越高说明该词对当前文档的区分度越重要。
+
+---
+
+**2. 与 CountVectorizer 的区别？**
+
+- `CountVectorizer` 只统计词频，高频词（即使无意义）权重会很高；
+- `TF-IDFVectorizer` 通过 IDF 降低高频通用词的权重，突出稀有但关键的词，更适合作为文本特征（如分类、检索等任务）
+
+---
+
+**3. TF-IDFVectorizer的使用**
+
+```python
+# 1. 导入包
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pandas as pd
+
+# 样本文本（3个文档）
+documents = [
+    "I love machine learning. Machine learning is interesting.",
+    "I love coding. Coding is fun and useful.",
+    "Machine learning and coding are my favorite skills."
+]
+
+# 2. 创建TF-IDF对象
+# stopwords='english' 忽略英文中的停用词
+# 停用词：指文本中频繁出现，但通常对语义理解帮助不大的虚词或常见词
+tfidf = TfidfVectorizer(min_df=1, stop_words='english')
+
+# 3. 创建特征矩阵
+X = tfidf.fit_transform(documents)
+
+# 4. 显示结果
+pd.DataFrame(X.toarray(), columns=tfidf.get_feature_names_out())
+```
+
+### 8. Cursor / VS Code / Trae 中 Jupyter NoteBook运行结果显示自动换行设置
+
+![image-20260226220947192](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260226220947520.png)
+
+搜索 word wrap
+
+![image-20260226221126523](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260226221127081.png)
