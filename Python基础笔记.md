@@ -5195,8 +5195,6 @@ print(text)
 
 #### 7.5 TF-IDFVectorizer
 
-TF-IDFVectorizer
-
 `TF-IDFVectorizer` 是 scikit-learn 中另一种常用的文本特征提取工具，它在 **词频（TF）** 的基础上引入了 **逆文档频率（IDF）** 权重，能更合理地衡量词语在文本中的“重要性”，避免高频但无实际意义的词（如 “the”、“is”）过度影响特征。
 
 ****
@@ -5216,8 +5214,8 @@ TF-IDF 是 **Term Frequency – Inverse Document Frequency** 的缩写，由两�
 - **逆文档频率（IDF）**：衡量一个词的**“稀有度”**——如果一个词在多数文档中都出现，它的 IDF 会较低（比如 “is”、“and”）；如果只在少数文档中出现，IDF 会较高（比如 “machine learning”、“coding”）。计算公式为：
 \[
   IDF(t) = \log\left(\frac{\text{总文档数}}{\text{包含词}t\text{的文档数} + 1}\right)
-  \]
-  
+\]
+
 分母加 1 是为了避免“包含词 t 的文档数为 0（测试集）”时的除零错误，即“平滑处理”，  log 是以 10 为底的。
 
 最终，**TF-IDF 值 = TF × IDF**，它综合了词在当前文档中的“出现频率”和在所有文档中的“稀有度”，值越高说明该词对当前文档的区分度越重要。
@@ -5264,3 +5262,4 @@ pd.DataFrame(X.toarray(), columns=tfidf.get_feature_names_out())
 搜索 word wrap
 
 ![image-20260226221126523](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260226221127081.png)
+
