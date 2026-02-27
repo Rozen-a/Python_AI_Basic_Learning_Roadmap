@@ -3577,23 +3577,25 @@ arr38 = np.split(arr36, 3, axis=1)
 print(arr38)
 ```
 
+> 输出结果：
+>
 > `[[1 2 3]
->  [4 5 6]
->  [7 8 9]]`
+> [4 5 6]
+> [7 8 9]]`
 >
 > `[array([[1, 2, 3]]), array([[4, 5, 6]]), array([[7, 8, 9]])]`
 >
 > `<class 'list'>`
 >
 > `[array([[1],
->        [4],
->        [7]]), 
->  array([[2],
->        [5],
->        [8]]), 
->  array([[3],
->        [6],
->        [9]])]`
+>     [4],
+>     [7]]), 
+> array([[2],
+>     [5],
+>     [8]]), 
+> array([[3],
+>     [6],
+>     [9]])]`
 
 #### 8.6 数组的转置与轴滚动
 
@@ -3618,25 +3620,27 @@ print("对换轴:")
 print(arr42)
 ```
 
+> 输出结果：
+>
 > `原始数组:
 > [[ 0  1  2  3]
->  [ 4  5  6  7]
->  [ 8  9 10 11]]
+> [ 4  5  6  7]
+> [ 8  9 10 11]]
 > 转置第一种方式:
 > [[ 0  4  8]
->  [ 1  5  9]
->  [ 2  6 10]
->  [ 3  7 11]]
+> [ 1  5  9]
+> [ 2  6 10]
+> [ 3  7 11]]
 > 转置第二种方式:
 > [[ 0  4  8]
->  [ 1  5  9]
->  [ 2  6 10]
->  [ 3  7 11]]
+> [ 1  5  9]
+> [ 2  6 10]
+> [ 3  7 11]]
 > 对换轴:
 > [[ 0  4  8]
->  [ 1  5  9]
->  [ 2  6 10]
->  [ 3  7 11]]`
+> [ 1  5  9]
+> [ 2  6 10]
+> [ 3  7 11]]`
 
 ```python
 # 4. 轴滚动
@@ -3658,10 +3662,12 @@ arr45 = np.rollaxis(arr44, 3, 1)
 print(arr45.shape)
 ```
 
+> 输出结果：
+>
 > `原始数组:
 > [[ 0  1  2  3]
->  [ 4  5  6  7]
->  [ 8  9 10 11]]`
+> [ 4  5  6  7]
+> [ 8  9 10 11]]`
 >
 > `轴滚动:
 > (4, 3)`
@@ -3707,6 +3713,8 @@ print(b, type(b))
 print(b > c)
 ```
 
+> 输出结果：
+>
 > `nan <class 'float'>`
 >
 > `inf <class 'float'>`
@@ -3719,6 +3727,8 @@ np.inf==np.inf  # 正无穷与正无穷相等
 np.nan== np.nan  # 非数与非数不相等
 ```
 
+> 输出结果：
+>
 > `True`
 >
 > `False`
@@ -3742,16 +3752,18 @@ t[np.isnan(t)] = 0
 print(t)
 ```
 
+> 输出结果：
+>
 > `[[ 0.  1.  2.  3.  4.  5.]
->  [ 6.  7.  8.  9. 10. 11.]
->  [12. 13. 14. 15. 16. 17.]
->  [18. 19. 20. 21. nan 23.]]`
+> [ 6.  7.  8.  9. 10. 11.]
+> [12. 13. 14. 15. 16. 17.]
+> [18. 19. 20. 21. nan 23.]]`
 > `23`
 > `1`
 > `[[ 0.  1.  2.  3.  4.  5.]
->  [ 6.  7.  8.  9. 10. 11.]
->  [12. 13. 14. 15. 16. 17.]
->  [18. 19. 20. 21.  0. 23.]]`
+> [ 6.  7.  8.  9. 10. 11.]
+> [12. 13. 14. 15. 16. 17.]
+> [18. 19. 20. 21.  0. 23.]]`
 
 ### 9. Pandas 核心数据结构
 
@@ -3783,6 +3795,8 @@ s3 = pd.Series({"Alice":85, "Bob":90, "Charlie":78, "David":92})
 print(s3)
 ```
 
+> 输出结果：
+>
 > `0    10
 > 1    20
 > 2    30
@@ -3833,6 +3847,8 @@ s3["Bob"] = 100
 print(s3)
 ```
 
+> 输出结果：
+>
 > `85`
 > `90`
 > `Alice       85
@@ -3950,6 +3966,8 @@ df = pd.DataFrame(data)
 print(df)
 ```
 
+> 输出结果：
+>
 > `      name  age  score gender
 > 0    Alice   20     85      女
 > 1      Bob   22     90      男
@@ -3962,6 +3980,8 @@ df = pd.DataFrame(data,index=['s1', 's2', 's3', 's4'])
 print(df)
 ```
 
+> 输出结果：
+>
 > `       name  age  score gender
 > s1    Alice   20     85      女
 > s2      Bob   22     90      男
@@ -3975,6 +3995,8 @@ df2 = pd.DataFrame(arr1,index=['a', 'b', 'c'],columns=['A', 'B', 'C', 'D'])
 print(df2)
 ```
 
+> 输出结果：
+>
 > `   A  B   C   D
 > a  0  1   2   3
 > b  4  5   6   7
@@ -3991,6 +4013,8 @@ df2 = pd.DataFrame(data2)
 df2
 ```
 
+> 输出结果：
+>
 > `   name  gender  height
 > 0   zs      男     180
 > 1   ls      男     180
@@ -4115,8 +4139,10 @@ print("通过多个行索引获取多个行数据:")
 print(df.loc[['s1','s3']])
 ```
 
+> 输出结果：
+>
 > `原始数据:
->     c1  c2  c3  c4
+>  c1  c2  c3  c4
 > s1   0   1   2   3
 > s2   4   5   6   7
 > s3   8   9  10  11`
@@ -4128,7 +4154,7 @@ print(df.loc[['s1','s3']])
 > Name: c2, dtype: int64`
 >
 > `通过多个列索引获取多个列的值
->     c2  c4
+>  c2  c4
 > s1   1   3
 > s2   5   7
 > s3   9  11`
@@ -4141,7 +4167,7 @@ print(df.loc[['s1','s3']])
 > Name: s2, dtype: int64`
 >
 > `通过多个行索引获取多个行数据:
->     c1  c2  c3  c4
+>  c1  c2  c3  c4
 > s1   0   1   2   3
 > s3   8   9  10  11`
 
@@ -4160,6 +4186,8 @@ print(df.iloc[1,2])         # 前面是行，后面是列
 # print(df.iloc[1][2])      # FutureWarning
 ```
 
+> 输出结果：
+>
 > `通过位置索引获取一行的值:
 > c1    4
 > c2    5
@@ -4168,7 +4196,7 @@ print(df.iloc[1,2])         # 前面是行，后面是列
 > Name: s2, dtype: int64`
 >
 > `通过位置索引获取多行数据:
->     c1  c2  c3  c4
+>  c1  c2  c3  c4
 > s1   0   1   2   3
 > s3   8   9  10  11`
 >
@@ -4191,13 +4219,15 @@ print(df.iloc[[1,2],[0,3]])  # 前面是行，后面是列
 print(df.loc[['s2','s3'],['c1','c4']])
 ```
 
+> 输出结果：
+>
 > `通过位置索引切片获取数据:
->     c2  c3
+>  c2  c3
 > s1   1   2
 > s2   5   6`
 >
 > `通过名字索引切片获取数据:
->     c2  c3  c4
+>  c2  c3  c4
 > s1   1   2   3
 > s2   5   6   7
 > s3   9  10  11`
@@ -4239,6 +4269,8 @@ df_dup_by_col = df.duplicated(subset=['age'], keep='first')
 print(df_dup_by_col)
 ```
 
+> 输出结果：
+>
 > `       name  age  score gender
 > s1    Alice   20     85      女
 > s2    Alice   22     90      男
@@ -4293,8 +4325,10 @@ print("直接在原数据上删除:")
 print(df)
 ```
 
+> 输出结果：
+>
 > `原数据:
->        name  age  score gender
+>     name  age  score gender
 > s1    Alice   20     85      女
 > s2    Alice   22     90      男
 > s3  Charlie   21     78      男
@@ -4302,18 +4336,18 @@ print(df)
 > s5    Alice   20     85      女
 > s6  Charlie   21     78      男`
 > `删除完全重复的行:
->        name  age  score gender
+>     name  age  score gender
 > s1    Alice   20     85      女
 > s2    Alice   22     90      男
 > s3  Charlie   21     78      男
 > s4    David   20     92      男`
 > `删除部分列重复的行:
->        name  age  score gender
+>     name  age  score gender
 > s1    Alice   20     85      女
 > s3  Charlie   21     78      男
 > s4    David   20     92      男`
 > `直接在原数据上删除:
->        name  age  score gender
+>     name  age  score gender
 > s1    Alice   20     85      女
 > s2    Alice   22     90      男
 > s3  Charlie   21     78      男
@@ -4354,6 +4388,8 @@ print("每一行缺失率:")
 print(df.isnull().sum(axis=1) / len(df.columns) )
 ```
 
+> 输出结果：
+>
 > `       name   age  score gender
 > s1    Alice  20.0   85.0      女
 > s2      Bob  22.0   90.0      男
@@ -4431,8 +4467,10 @@ print("删除 score数据缺失的行:")
 print(df_drop_na_by_col)
 ```
 
+> 输出结果：
+>
 > `原数据：
->        name   age  score gender
+>     name   age  score gender
 > s1    Alice  20.0   85.0      女
 > s2      Bob  22.0   90.0      男
 > s3  Charlie  21.0    NaN      男
@@ -4441,12 +4479,12 @@ print(df_drop_na_by_col)
 > s6    Frank   NaN    NaN    NaN`
 >
 > `删除含有缺失值的行:
->      name   age  score gender
+>   name   age  score gender
 > s1  Alice  20.0   85.0      女
 > s2    Bob  22.0   90.0      男`
 >
 > `删除含有缺失值的列:
->        name
+>     name
 > s1    Alice
 > s2      Bob
 > s3  Charlie
@@ -4455,7 +4493,7 @@ print(df_drop_na_by_col)
 > s6    Frank`
 >
 > `删除 score数据缺失的行:
->      name   age  score gender
+>   name   age  score gender
 > s1  Alice  20.0   85.0      女
 > s2    Bob  22.0   90.0      男
 > s4  David  20.0   92.0    NaN
@@ -4493,8 +4531,10 @@ print("单独把【score】列取出来，填充缺失值为80:")
 print(df)
 ```
 
+> 输出结果：
+>
 > `原数据:
->        name   age  score gender
+>     name   age  score gender
 > s1    Alice  20.0   85.0      女
 > s2      Bob  22.0   90.0      男
 > s3  Charlie  21.0    NaN      男
@@ -4503,7 +4543,7 @@ print(df)
 > s6    Frank   NaN    NaN    NaN`
 >
 > `填充缺失值为0:
->        name   age  score gender
+>     name   age  score gender
 > s1    Alice  20.0   85.0      女
 > s2      Bob  22.0   90.0      男
 > s3  Charlie  21.0    0.0      男
@@ -4512,7 +4552,7 @@ print(df)
 > s6    Frank   0.0    0.0      0`
 >
 > `填充【gender】缺失值为男，【score】缺失值为80:
->        name   age  score gender
+>     name   age  score gender
 > s1    Alice  20.0   85.0      女
 > s2      Bob  22.0   90.0      男
 > s3  Charlie  21.0   80.0      男
@@ -4521,7 +4561,7 @@ print(df)
 > s6    Frank   NaN   80.0      男`
 >
 > `单独把【score】列取出来，填充缺失值为80:
->        name   age  score gender
+>     name   age  score gender
 > s1    Alice  20.0   85.0      女
 > s2      Bob  22.0   90.0      男
 > s3  Charlie  21.0   80.0      男
@@ -4568,6 +4608,8 @@ df['age'] = df['age'].apply(lambda x: x * 2)
 print(df)
 ```
 
+> 输出结果：
+>
 > `       name  age  score gender
 > s1    Alice   20     85      女
 > s2      Bob   22     90      男
@@ -4604,6 +4646,8 @@ print(df.apply(lambda x: x.max(), axis=0))          # 默认轴是0，即列
 print(df.apply(lambda x: x.count(), axis=1))        # 轴1, 是行
 ```
 
+> 输出结果：
+>
 > `    c1  c2  c3  c4
 > s1   0   1   2   3
 > s2   4   5   6   7
@@ -4667,6 +4711,8 @@ df2 = df2.map(lambda x: x * 2)
 print(df2)
 ```
 
+> 输出结果：
+>
 > `       name  age  score gender
 > s1    Alice   20     85      女
 > s2      Bob   22     90      男
@@ -4744,6 +4790,8 @@ print(df['age'].std())         # 标准差
 print(df['age'].sum())         # 求和
 ```
 
+> 输出结果：
+>
 > `        name  age  score  gender
 > s1    Alice   20     85      女
 > s2      Bob   22     90      男
@@ -4751,7 +4799,7 @@ print(df['age'].sum())         # 求和
 > s4    David   20     92      男
 > s5      Eva   20     85      女
 > s6    Frank   30     72      男`
-> 
+>
 > `单列统计:
 > count     6.000000
 > mean     22.166667
@@ -4762,11 +4810,11 @@ print(df['age'].sum())         # 求和
 > 75%      21.750000
 > max      30.000000
 > Name: age, dtype: float64`
-> 
+>
 > `--------------------`
-> 
+>
 > `多列统计:
->           age      score
+>        age      score
 > count   6.000000   6.000000
 > mean   22.166667  85.333333
 > std     3.920034   7.089899
@@ -4775,9 +4823,9 @@ print(df['age'].sum())         # 求和
 > 50%    20.500000  86.500000
 > 75%    21.750000  89.500000
 > max    30.000000  92.000000`
-> 
+>
 > `--------------------`
-> 
+>
 > `          age      score
 > count   6.000000   6.000000
 > mean   22.166667  85.333333
@@ -4787,7 +4835,7 @@ print(df['age'].sum())         # 求和
 > 50%    20.500000  86.500000
 > 75%    21.750000  89.500000
 > max    30.000000  92.000000`
-> 
+>
 > `常用统计函数:`
 > `22.166666666666668`
 > `20.5`
@@ -4822,6 +4870,8 @@ print(df['age'].sum())         # 求和
 print(df.describe(include=['object']))  # 对数据类型为 object 的列进行统计描述
 ```
 
+> 输出结果：
+>
 > `         name gender
 > count       6      6
 > unique      6      2
@@ -4857,6 +4907,8 @@ multi_col_stats = df.agg({
 print(multi_col_stats)
 ```
 
+> 输出结果：
+>
 > `       name  age  score gender
 > s1    Alice   20     85      女
 > s2      Bob   22     90      男
@@ -4912,6 +4964,8 @@ print(mean_score)
 
 ```
 
+> 输出结果：
+>
 > `       name  age  score gender
 > s1    Alice   20     85      女
 > s2      Bob   22     90      男
@@ -4919,12 +4973,12 @@ print(mean_score)
 > s4    David   20     92      男
 > s5      Eva   20     82      女
 > s6    Frank   30     72      男`
-> 
+>
 > `<pandas.core.groupby.generic.DataFrameGroupBy object at 0x000001D2E7CD9E80>`
-> 
+>
 > `分组之后统计:
->            age                                                    score        \
->            count   mean     std    min    25%   50%   75%   max   count  mean   
+>         age                                                    score        \
+>         count   mean     std    min    25%   50%   75%   max   count  mean   
 > gender                                                                     
 > 女        2.0  20.00  0.000000  20.0  20.00  20.0  20.0  20.0   2.0  83.5   
 > 男        4.0  23.25  4.573474  20.0  20.75  21.5  24.0  30.0   4.0  85.5   `
@@ -4933,7 +4987,7 @@ print(mean_score)
 > gender                                            
 > 女       2.121320  82.0  82.75  83.5  84.25  85.0  
 > 男       9.146948  72.0  84.00  89.0  90.50  92.0  `
-> 
+>
 > `分组之后求均值:
 > gender
 > mean_女    83.5
@@ -4976,6 +5030,8 @@ df["score_rank"] = df.groupby("gender")["score"].transform(lambda group: group.r
 print(df[["name", "gender", "score", "score_rank"]])
 ```
 
+> 输出结果：
+>
 > `       name   gender   score   max_score
 > s1    Alice      女     85         85
 > s2      Bob      男     90         92
@@ -5027,7 +5083,7 @@ print(df[["name", "gender", "score", "score_rank"]])
 
 ![image-20260226201515419](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260226201515663.png)
 
-### 7. scikit-learn 特征提取
+### 7. ⚠scikit-learn 特征提取
 
 在sklearn中常见的特征提取工具：
 
@@ -5193,7 +5249,7 @@ print(text)
 > - jieba.lcut(sentence) 直接返回分词后的列表。
 > - jieba.cut(sentence) 返回的是一个可迭代的生成器，需要用 list() 转换成列表才可查看全部分词结果。
 
-#### 7.5 TF-IDFVectorizer
+#### 7.5 ⚠TF-IDFVectorizer
 
 `TF-IDFVectorizer` 是 scikit-learn 中另一种常用的文本特征提取工具，它在 **词频（TF）** 的基础上引入了 **逆文档频率（IDF）** 权重，能更合理地衡量词语在文本中的“重要性”，避免高频但无实际意义的词（如 “the”、“is”）过度影响特征。
 
@@ -5263,3 +5319,335 @@ pd.DataFrame(X.toarray(), columns=tfidf.get_feature_names_out())
 
 ![image-20260226221126523](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260226221127081.png)
 
+## <span style='color:red'>Day11</span>
+
+### 1. scikit-learn 数值特征预处理
+
+在机器学习中，**数值特征预处理**是模型训练前的关键步骤，其核心目标是通过调整数据的尺度、分布或补全缺失值，让数据更符合模型的假设（如线性模型假设特征分布相近），从而提升模型的稳定性和性能。
+
+#### 1.1 ⚠归一化（区间缩放）
+
+将特征值线性映射到**指定的有限区间**（如 [0,1] 或 [-1,1]），消除不同特征的量纲差异。
+
+**核心工具：`MinMaxScaler()`**
+
+**⚠原理**：通过特征的最小值（`x_min`）和最大值（`x_max`）进行线性变换，公式为：
+$$
+X_{\text{scaled}} = \frac{X - X_{\min}}{X_{\max} - X_{\min}}
+\times (\text{max\_range} - \text{min\_range})
++ \text{min\_range}
+$$
+含义说明：
+
+- $X_{\min}$：最小值
+- $X_{\max}$：最大值
+- $\text{min\_range}, \text{max\_range}$：目标区间上下界
+
+>  默认区间为 **[0,1]**
+
+这种线性变换的**特点**是：
+
+- 不改变数据的**分布形状**（如原始数据是均匀分布，归一化后仍是均匀分布）
+- 不改变数据间的**相对关系**（如原始数据中 A > B，归一化后仍 A' > B'）
+- 仅改变数据的**绝对数值范围**，从而消除尺度差异
+
+> 机器学习假设：所有样本都是**独立同分布**的（即一个样本变化不会影响其它样本，样本之间没有联系）
+>
+> 算法是要**学习数据的分布**
+
+**示例：**
+
+```python
+import numpy as np
+# 导入归一化类
+from sklearn.preprocessing import MinMaxScaler
+
+# 1. 创建数据
+data = np.array([[1,200],[2,300],[3,400]])
+print(data)
+
+# 2. 创建归一化类
+scaler = MinMaxScaler(feature_range=(0,1))
+
+# 3. 训练并归一化数据
+data_scaled = scaler.fit_transform(data)
+
+# 4. 显示结果
+print(data_scaled)
+```
+
+**注意事项：**
+
+[1] 归一化容易受到**异常点**的影响
+[2] 归一化处理数据，鲁棒性较差（也就是在异常点的影响下波动较大），只适合**精确、数据量小**的场景
+[3] 归一化处理之后，更容易通过**梯度下降法**找最优解
+
+#### 1.2 ⚠标准化（Z-score缩放）
+
+标准化的核心是将特征转换为**均值为 0、标准差为 1**的分布（也就是 Z-score 分布），保留数据的相对离散程度，数据的分布仍然是原有分布，更适合近似正态分布的数据。
+
+![image-20260228020258448](C:/Users/MSI-NB/AppData/Roaming/Typora/typora-user-images/image-20260228020258448.png)
+
+> **标准差（Standard Deviation）**是用来衡量一组数据离散程度（波动大小）的统计量，反映数据**相对于平均值偏离得有多远**。
+>
+> 简单说一句话：
+>  👉 **标准差越大，数据越分散；标准差越小，数据越集中在平均值附近。**
+>
+> 公式：
+> $$
+> \sigma = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2}
+> $$
+> 取值范围：**σ≥0**
+
+**核心工具：StandardScaler**
+
+**原理**：基于特征的均值（μ）和标准差（σ）进行变换，公式为：
+
+
+$$
+X_{\text{scaled}} = \frac{X - \mu}{\sigma}
+$$
+含义说明：
+
+- $X$：原始数据
+- $\mu$：均值（mean）
+- $\sigma$：标准差（standard deviation）
+
+**解释：**
+
+[1] 该公式会将符合正态分布的数据，转化为标准正态分布，会保留原始数据对称、集中的特性
+[2] 如果原始数据严重偏离正态分布，那么该公式虽能统一尺度，转化为均值为0，方差为1的数据，但是无法使得转换之后的数据符合正态分布的特性
+[3] 为什么我们总是希望数据更加符合正态分布呢？
+
+很多经典统计模型和机器学习算法的设计依赖于“数据近似正态分布”的假设，或者在正态分布下表现更稳定。
+
+原因在于：
+
+- 符合模型的数学假设，提升参数估计的可靠性（比如线性回归的核心假设之一就是：误差项服从正态分布）
+- **减少极端值的影响**，让模型更稳健（大白话来说其实就是正态分布的数据，不容易受到极值影响）
+- 便于数据解读和阈值设定（符合正态分布的数据，更容易判断异常程度，从而设置异常阈值）
+
+**示例：**
+
+```python
+import numpy as np
+# 1. 导入标准化类
+from sklearn.preprocessing import StandardScaler
+
+# 2. 创建数据
+data = np.array([[1,200],[2,300],[3,400]])
+
+# 3. 创建标准化类
+scaler = StandardScaler()
+
+# 4. 训练并标准化数据
+data_scaled = scaler.fit_transform(data)
+
+# 5. 显示结果
+data_scaled
+```
+
+#### 1.3 缺失值处理
+
+现实数据常存在缺失值（`NaN`），而大多数模型（如线性回归、SVM）无法直接处理 `NaN`，需提前补全。sklearn 的 `impute` 模块提供了多种工具，比如 `SimpleImputer`、`KNNImputer` 等，我们在这里学习 `SimpleImputer`
+
+**SimpleImputer：简单填充**
+
+- **原理**：用指定策略（如均值、中位数、众数）填充缺失值
+- **关键参数：strategy（填充策略）**
+    - `mean`：均值填充（适用于近似正态分布的连续特征）；
+    - `median`：中位数填充（适用于含异常值的连续特征）；
+    - `most_frequent`：众数填充（适用于分类特征或离散特征）；
+    - `constant`：常数填充（需指定 `fill_value`）。
+
+**示例：**
+
+```python
+import numpy as np
+# 1. 导入缺失值处理的类
+from sklearn.impute import SimpleImputer
+
+# 2. 创建数据(包含缺失值)
+data = np.array([[1, np.nan], [2, 300], [np.nan, 400]])
+
+# 3. 创建缺失值处理类
+# strategy: mean, median, most_frequent, constant
+# mean: 使用数据的平均值填充缺失值
+imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+
+# 4. 训练模型并预测
+data_new = imputer.fit_transform(data)
+
+# 5. 输出结果
+print(data_new)
+```
+
+### 2. scikit-learn 特征选择
+
+**从原始特征中筛选子集（保留一些特征 / 剔除一些特征），找出对目标值有影响的特征，去掉冗余和噪声信息。**
+
+这样，可以带来的**好处**是：
+
+- 降低模型复杂度
+- 提高模型的泛化能力
+- 提升模型的可解释性
+
+**特征值选择方法：**
+
+- **过滤法**
+    基于特征“统计属性”筛选（如方差、相关性），代表工具：**方差阈值（VarianceThreshold）**
+- **嵌入法**
+    利用模型**自身的特征重要性指标**来进行筛选，比如：线性模型（Lasso、Ridge）、决策树、随机森林
+- **包裹法**
+    用模型“反馈”迭代筛选（如递归消除 RFE）
+
+****
+
+**方差阈值进行特征选择**
+
+✅ 此方法会剔除那些在所有样本中取值几乎不变（方差极小）的特征，因为它们无法提供区分信息。
+
+```python
+from sklearn.feature_selection import VarianceThreshold
+
+# 创建特征数据
+X = np.array([[0, 2, 0, 3],
+              [0, 1, 4, 3],
+              [0, 1, 1, 3]])
+
+# 初始化方差阈值选择器（默认阈值为0，去除方差为0的特征）
+selector = VarianceThreshold(threshold=0.5)
+
+# 拟合并转换数据
+X_selected = selector.fit_transform(X)
+
+print("原始数据:\n", X)
+print("方差阈值特征选择后的数据:\n", X_selected)
+print("保留下来的特征索引:", selector.get_support(indices=True))
+```
+
+> 输出结果：
+>
+> `原始数据:
+>  [[0 2 0 3]
+>  [0 1 4 3]
+>  [0 1 1 3]]`
+>
+> `方差阈值特征选择后的数据:
+>  [[2 0]
+>  [1 4]
+>  [1 1]]`
+>
+> `保留下来的特征索引: [1 2]`
+
+### 3. ⚠scikit-learn 特征降维
+
+特征降维是通过线性或非线性数学变换，将高维特征映射到低维空间，生成全新的低维特征（非原始特征子集），核心是在降维的同时最大化保留原始数据信息。
+
+![image-20260228045538389](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260228045538708.png)
+
+**特征降维与特征选择的核心区别在于：**
+
+- **特征选择**：保留原始特征，仅剔除无用项；
+    **降维**：生成新特征，改变特征表达形式。
+- **特征选择**可解释性强（保留原始特征含义）；
+    **降维后**新特征的物理意义可能不明确。
+
+****
+
+#### ⚠PCA（主成分分析）降维
+
+PCA 是最常用的线性降维方法，属于无监督学习，不依赖标签信息。
+
+
+
+**1. PCA（Principal components analysis）降维是什么呢？**
+
+**核心思想**：主成分分析（PCA）是一种无监督学习方法，旨在通过线性变换将原始的高维数据映射到一个低维空间，同时**尽可能保留数据的方差（即信息量）**。简单来说，PCA 的目标是找到一组新的坐标轴（称为主成分），这些坐标轴能够捕捉数据中最大的变异性，并**用更少的维度来近似表示原始数据**。
+
+**关键名词解释：**
+
+- **维度**：就是数据的“特征数量”。比如，房子的面积、房间数是 2 个维度，加个价格就变成 3 维。
+- **降维**：把维度变少。比如，原来有 10 个特征，降维后只剩 2 个。
+- **主成分**：PCA 找到的“新坐标轴”。这些新坐标轴是原来特征的某种组合，能抓住数据里最大的变化。比如：如果数据是一堆散乱的点，主成分就像是你找到的最粗的那根“趋势线”，能概括大部分点的走向。
+- **方差**：数据的“散乱程度”。方差越大，说明数据点越分散，越能体现差异。比如：如果所有学生的数学成绩都是 80 分，方差就很小；如果有人 100 分，有人 20 分，方差就很大。
+
+
+
+**2. 如何计算一组新的坐标轴呢？**
+
+![image-20260228050128965](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260228050129162.png)
+
+PCA 降维的本质就是找新的坐标系。那么如何找到新的坐标系呢？
+
+假如存在新的坐标系，使得**原始数据的各个样本点和在新的坐标系下的投影点的距离和最小**，那么我们认为：
+
+[1] 沿着轴1方向，数据分散，方差最大，最能反应数据的变化趋势，这就是应该保留的主成分
+[2] 沿着轴2方向，数据集中，方差小，不能表示数据的差异，这就是应该舍弃的主成分
+
+✅ **PCA 在降维时，只保留前几个主成分（即方差值最大的那些主成分），从而减少特征数据的维度，同时保留主要（差异）信息**
+
+![image-20260228050208455](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260228050208672.png)
+
+
+
+**3. 使用 sklearn 进行 PCA 降维**
+
+```python
+# 1. 导入 PCA 类
+from sklearn.decomposition import PCA
+import numpy as np
+
+# 2. 创建 PCA 对象
+# n_components 是整数时：保留的维度
+# n_components 是小数 (0~1) 时：保留的主成分解释的方差比例
+pca = PCA(n_components=2)
+
+# 3. 准备数据
+X = np.array([[0, 2, 0, 3], [0, 1, 4, 3], [0, 1, 1, 3]])
+
+# 4. 训练 PCA 模型
+X_pca = pca.fit_transform(X)
+
+# 5. 输出结果
+print(f"原始数据结构: {X.shape[0]} 个数据, {X.shape[1]} 维")
+print(f"降维后特征数: {X_pca.shape[0]} 个数据, {X_pca.shape[1]} 维")
+```
+
+> **主成分解释的方差比例**
+>
+> - 方差 = 数据信息量
+> - 解释的方差比例 = 某主成分的方差 ÷ 总方差
+> - 含义：该主成分能**保留原始数据多少信息**
+>
+> **要点：**
+>
+> - 主成分按解释方差从大到小排序
+> - 常用累计解释方差 ≥ 90% / 95% 来决定保留的维度
+>
+> **sklearn：**
+>
+> ```python
+> pca.explained_variance_ratio_      # 各主成分比例
+> pca.explained_variance_ratio_.cumsum()  # 累计比例
+> ```
+>
+> **一句话**：
+> ✅解释的方差比例越大，该主成分越重要。
+
+### 4. ⚠分类与回归概念区分
+
+**分类（Classification）**：
+ 目标是预测**离散的类别标签**。输出是有限、可枚举的类别。
+ 例子：垃圾邮件判断（是 / 否）、手写数字识别（0–9）、肿瘤良性或恶性。
+ 常见算法：逻辑回归、决策树、朴素贝叶斯、支持向量机、KNN。
+
+**回归（Regression）**：
+ 目标是预测**连续的数值**。输出是一个具体的数。
+ 例子：房价预测、气温预测、销量预测。
+ 常见算法：线性回归、多项式回归、岭回归、Lasso 回归。
+
+**核心区别**：
+
+- 输出类型：分类 → 类别；回归 → 数值
+- 评估方式：分类常用准确率、精确率；回归常用均方误差、R²
