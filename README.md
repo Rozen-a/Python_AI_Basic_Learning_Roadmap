@@ -30,13 +30,13 @@ WangDao_PythonAI/
 ├── Day11/                   # sklearn 数值预处理 / 特征选择 / 降维
 ├── Day12/                   # KNN、超参数搜索、分类评估
 ├── Day13/                   # 正则化回归、逻辑回归与优化
-├── Day10/Day10.ipynb        # 文本特征提取等实践
-├── Day11/scikit-learn.ipynb # sklearn 综合实践
-├── Day12/*.ipynb            # KNN、线性回归实战
-├── 1-Python基础笔记.md      # Day2–Day7 Python 基础与进阶总结
-├── 2-数据分析笔记.md        # Day8–Day10 Numpy / Pandas / Matplotlib
-├── 3-机器学习笔记.md        # Day10–Day13 机器学习与优化算法
-├── 零散笔记/                # 若干补充知识点
+├── Day10/                   # 文本特征提取等实践
+├── Day11/ 	                 # sklearn 综合实践
+├── Day12/                   # KNN、线性回归实战
+├── 1-Python基础笔记.md    	  # Day2–Day7 Python 基础与进阶总结
+├── 2-数据分析笔记.md          # Day8–Day10 Numpy / Pandas / Matplotlib
+├── 3-机器学习笔记.md          # Day10–Day13 机器学习与优化算法
+├── 零散笔记/                 # 若干补充知识点
 └── README.md
 ```
 
