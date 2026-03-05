@@ -33,10 +33,14 @@ WangDao_PythonAI/
 ├── Day10/                   # 文本特征提取等实践
 ├── Day11/ 	                 # sklearn 综合实践
 ├── Day12/                   # KNN、线性回归实战
-├── 1-Python基础笔记.md    	  # Day2–Day7 Python 基础与进阶总结
-├── 2-数据分析笔记.md          # Day8–Day10 Numpy / Pandas / Matplotlib
-├── 3-机器学习笔记.md          # Day10–Day13 机器学习与优化算法
+├── 系统学习笔记/             # 系统学习的 Markdown 笔记
+│   ├── 1-Python基础笔记.md   # Day2–Day7 Python 基础与进阶总结
+│   ├── 2-数据分析笔记.md     # Day8–Day10 Numpy / Pandas / Matplotlib
+│   ├── 3-机器学习笔记.md     # Day10–Day13 机器学习与优化算法
+│   └── 4-深度学习.md         # 深度学习相关笔记
 ├── 零散笔记/                 # 若干补充知识点
+│   ├── fit() 和 transform().md
+│   └── 为什么标准化后均值为 0、标准差为 1.md
 └── README.md
 ```
 
@@ -146,8 +150,6 @@ WangDao_PythonAI/
 ---
 
 ### 其他笔记与零散内容
-- **1-Python基础笔记.md**：系统整理 Day2–Day7 所有 Python 语法与进阶知识点
-- **2-数据分析笔记.md**：Numpy / Pandas / Matplotlib 等数据分析核心 API 详解与案例
-- **3-机器学习笔记.md**：sklearn 预处理、特征工程、分类 / 回归、正则化、优化算法等完整笔记
-- **零散笔记/**：`fit & transform`、标准化为何均值为 0 方差为 1 等补充知识点说明
+- **fit() 和 transform().md**：解释 `fit()` 和 `transform()` 的区别与使用场景
+- **为什么标准化后均值为 0、标准差为 1.md**：说明标准化后的统计性质及原因
 
