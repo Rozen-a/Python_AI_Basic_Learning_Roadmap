@@ -1377,7 +1377,9 @@ print(sys.path) # 输出模块搜索路径列表
         print('我是my_module2的hello')
     ```
 
-#### **导包并使用的方式：**
+****
+
+**导包并使用的方式：**
 
 **方式一：`import 包名.模块名`**
 
@@ -5004,7 +5006,7 @@ df.groupby("gender")["score"].agg('max')
 
 输出结果：
 
-<img src="C:/Users/MSI-NB/AppData/Roaming/Typora/typora-user-images/image-20260226011510287.png" alt="image-20260226011510287" style="zoom:80%;" />
+<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235347906.png" alt="image-20260226011510287" style="zoom:80%;" />
 
 > 按分组给出最大值
 
@@ -5386,7 +5388,7 @@ print(data_scaled)
 
 标准化的核心是将特征转换为**均值为 0、标准差为 1**的分布（也就是 Z-score 分布），保留数据的相对离散程度，数据的分布仍然是原有分布，更适合近似正态分布的数据。
 
-![image-20260228020258448](C:/Users/MSI-NB/AppData/Roaming/Typora/typora-user-images/image-20260228020258448.png)
+![image-20260228020258448](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235347907.png)
 
 > **标准差（Standard Deviation）**是用来衡量一组数据离散程度（波动大小）的统计量，反映数据**相对于平均值偏离得有多远**。
 >
@@ -5651,3 +5653,883 @@ print(f"降维后特征数: {X_pca.shape[0]} 个数据, {X_pca.shape[1]} 维")
 
 - 输出类型：分类 → 类别；回归 → 数值
 - 评估方式：分类常用准确率、精确率；回归常用均方误差、R²
+
+## <span style='color:red'>Day12</span>
+
+### 1. 分类算法-KNN
+
+KNN 算法是**有监督学习算法**，既可用于分类，也可用于回归任务。
+
+是最简单的分类算法之一，同时，它也是最常用的分类算法之一。
+
+****
+
+**K-近邻算法（K Nearest Neighbors，简称KNN）。**
+
+**核心思想：** 如果一个样本在特征空间中的 k 个最相似的样本中的大多数属于某一个类别，则该样本也属于这个类别。 比如：根据你的“邻居”来推断出你的类别
+
+![image-20260301165101422](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301165101683.png)
+
+**分类流程与回归流程**
+
+分类问题 → 判断类型
+
+回归问题 → 获取确定数值
+
+**分类流程：**
+
+[1] 计算未知样本到每一个训练样本的距离
+[2] 将训练样本，根据距离大小升序排列
+[3] 取出距离最近的 K 个训练样本
+[4] 进行多数表决，**统计 K 个样本中哪个类别的样本个数最多**
+[5] 将未知的样本归属到出现次数最多的类别
+
+**回归流程：**
+
+[1] 计算未知样本到每一个训练样本的距离
+[2] 将训练样本根据距离大小升序排列
+[3] 取出距离最近的 K 个训练样本
+[4] 把这个 K 个样本的目标值**计算其平均值**
+[5] 将上述平均值作为将未知的样本预测的值
+
+****
+
+**优点：**
+
+[1] 算法简单，理论成熟，既可以用来做分类，也可以用来做回归
+
+[2] **无显式训练过程**（惰性学习），预测阶段需要使用全部训练数据
+
+**缺点：**
+
+[1] **预测时计算量大，需遍历所有训练样本**
+
+[2] 维度灾难，对高维数据敏感
+
+[3] **K值过小**，模型容易受到异常点的影响，有**过拟合**的问题
+
+[4] **K值过大**，模型不易受到异常点的影响，但是可能会存在**欠拟合**的风险
+
+****
+
+**适用场景：**
+
+- 小规模数据集（避免计算量过大）
+- 简单分类/回归任务
+
+**注意事项：**
+
+- 必须标准化特征
+- 高维数据需先降维（避免维度灾难，导致计算量过大）
+- K 值需通过交叉验证和网格搜索调优
+
+****
+
+**API**
+
+```python
+# 1. 对应的类
+from sklearn.neighbors import KNeighborsClassifier    # KNN分类算法
+from sklearn.neighbors import KNeighborsRegressor      # KNN回归算法
+
+# 2. 创建对象
+estimator = KNeighborsClassifier(n_neighbors=3)       # 创建一个KNN分类模型 对象，K值取3
+
+# 3. 模型训练
+estimator.fit(X_train, y_train)                       # X_train: 训练集特征，y_train: 训练集标签
+
+# 4. 结果预测
+y_predict = estimator.predict(X_test)                 # X_test: 测试集特征，y_predict: 测试集的预测结果
+
+# 5. 模型评估
+score = estimator.score(X_test, y_test)               # score: 准确率   X_test: 测试集特征，y_test: 测试集标签
+```
+
+### 2. KNN实战
+
+**数据集下载：**[Facebook V：预测签到时间 |卡格尔 --- Facebook V: Predicting Check Ins | Kaggle](https://www.kaggle.com/competitions/facebook-v-predicting-check-ins/data)
+
+**数据集说明：**time列的单位是分钟，即距离1970年1月1日0时0分0秒的分钟数
+
+```python
+#预处理
+import pandas as pd
+
+# 读取数据
+df = pd.read_csv('FBlocation/train.csv')
+
+# 数据筛选
+filtered_df = df.query('1.0 < x < 1.25 and 2.5 < y  < 2.75')
+
+
+# time列以分钟为单位，转为时间格式（假定从时间原点起）
+filtered_df.loc[:, 'datetime'] = pd.to_datetime(filtered_df.loc[:, 'time'], unit='m')
+print(filtered_df.shape)
+filtered_df.head()
+```
+
+```python
+# 从datetime中提取星期几、小时和天数
+filtered_df = filtered_df.copy() 
+filtered_df.loc[:, 'weekday'] = filtered_df['datetime'].dt.weekday
+filtered_df.loc[:, 'hour'] = filtered_df['datetime'].dt.hour
+filtered_df.loc[:, 'day'] = filtered_df['datetime'].dt.day
+
+
+# 只保留出现次数不少于3次的place_id
+place_counts = filtered_df['place_id'].value_counts() # 统计每个place_id的出现次数
+valid_places = place_counts[place_counts > 3].index # 只保留出现次数不少于3次的place_id
+print(valid_places.shape)
+filtered_df = filtered_df[filtered_df['place_id'].isin(valid_places)].copy() # 只保留出现次数不少于3次的place_id
+
+# 移除row_id, time, datetime列
+features = filtered_df.drop(['row_id', 'time', 'datetime', 'place_id'], axis=1)
+print(features.head())
+labels = filtered_df['place_id']
+print(labels.head())
+print(features.shape)
+```
+
+```python
+# 划分为训练集和测试集,加random_state=42是为了保证每次运行结果相同
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
+from sklearn.preprocessing import StandardScaler
+
+# 对特征数据进行标准化处理
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test) #transform() 不会重新计算均值和方差，而是使用训练集的均值和方差
+```
+
+> 机器学习中假设训练集和测试集的分布是一致的，所以对测试集标准化时用transform()，直接使用训练集的均值和方差
+
+```python
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+# 实例化KNN分类器，k取5
+knn = KNeighborsClassifier(n_neighbors=5)
+# 用训练集训练KNN模型
+knn.fit(X_train, y_train)
+# 在测试集上做出预测
+y_pred = knn.predict(X_test)
+# 计算并输出测试集的预测准确率
+acc = accuracy_score(y_test, y_pred)
+print(f"KNN测试集准确率: {acc:.4f}")
+
+```
+
+### 3. 距离计算
+
+在机器学习领域，经常需要用到距离计算，下面是最常见的两种距离计算方式：
+
+- 欧式距离(最常用)
+- 曼哈顿距离
+
+![image-20260301164958750](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301164958933.png)
+
+### 4. 超参数选择方法（交叉验证 与 网格搜索）
+
+**1. 什么是超参数？**
+
+在机器学习和深度学习中，**超参数**是指在算法运行之前手动设置的参数，用于控制模型的行为和性能。 
+
+比如：KNN算法中的K值就是典型的超参数，还有后续会接触到的学习率、正则化参数、神经元数量等都是常见的超参数。
+
+**2. 如何调整超参数？**
+
+超参数调优是一个试错的过程，需要根据经验和领域知识进行调整。 
+
+常见的方法包括交叉验证、网格搜索、随机搜索等。通过不断调整和优化超参数，可以找到最优的超参数组合，从而提升模型的性能。
+
+**3. 交叉验证 与 网格搜索**
+
+**交叉验证（Cross Validation）**：将训练集分为多个子集，轮流使用一个子集作为验证集（测试集），其余作为训练集，最终取平均性能指标，确保模型评估稳定性
+
+![image-20260301203323240](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301203323477.png)
+
+交叉验证法流程：如上图所示，将数据集划分为 `cv=5` 份**（5折交叉验证）**
+
+[1] 第一次，把第一份数据做验证集，其他数据做训练 [2] 第二次，把第二份数据做验证集，其他数据做训练 [3] ... 以此类推，总共训练5次，评估5次结果 [4] 在多次训练—验证过程中，**对验证集上的性能取平均值**，作为模型的交叉验证得分 [5] 若k=3模型得分最好，在使用全部数据集（训练集+验证集）对k=3模型再训练一遍，再使用测试机对k=3模型做评估
+
+交叉验证法，是划分数据集的一种方法，目的就是为了得到更加准确可信的模型评分。 大白话说来，交叉验证的目的，其实就是为了**降低结果的偶然性**，从而提高模型的准确度与可信度
+
+****
+
+**网格搜索（Grid Search）**：网格搜索是一种**穷举**搜索方法，它通过遍历超参数的所有可能组合来寻找最优超参数。
+
+![image-20260301203601221](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301203601446.png)
+
+网格搜索是模型调参的有力工具。寻找最优超参数的工具！ 
+
+只需要将若干参数传递给网格搜索对象，它自动帮我们完成不同超参数的组合、模型训练、模型评估，最终返回一组最优的超参数。
+
+****
+
+**网格搜索 + 交叉验证 的组合，是模型的选择和调优的强有力的工具**
+
+- 交叉验证解决模型的数据输入问题(数据集划分)得到更可靠的模型
+- 网格搜索解决超参数的组合
+
+两个组合在一起形成一个模型参数调优的解决方案
+
+**交叉验证与网格搜索代码实现：**
+
+```python
+# 1. 导包
+from sklearn.model_selection import GridSearchCV
+
+# 2. 定义参数值
+param_grid = {'n_neighbors':[1,3,5,10]}
+
+# 实例化KNN分类器
+knn = KNeighborsClassifier()
+
+# 3. 实例化超参数网格搜索，使用5折交叉验证
+grid_model = GridSearchCV(knn, param_grid, cv=5)
+
+# 4. 使用网格搜索，找到最好的模型
+grid_model.fit(X_train, y_train)            # 4组超参数，5折交叉验证，找到最好的模型
+
+# 5. 交叉验证网格搜索结果查看
+print(f"best_params:{grid_model.best_params_}")  # 最佳参数组合
+print(f"best_score:{grid_model.best_score_}")
+print(f"best_estimator:{grid_model.best_estimator_}")
+print(f"best_results:{grid_model.cv_results_}")
+
+# 可选：保存结果到文件中，方便查看
+# pd.DataFrame(grid_model.cv_results_).to_csv("knn_grid_results.csv", index=False)
+
+# 6. 模型评估
+print(f"训练集的准确率：{grid_model.score(X_train, y_train)}")
+print(f"测试集的准确率：{grid_model.score(X_test, y_test)}")
+```
+
+### 5. 分类模型评估指标
+
+`estimator.score()`能够获得模型评估的准确率，也就是预测结果正确的百分比 但是这还不够，在机器学习领域，还有更加精细的评估指标。
+
+#### 5.1 混淆矩阵
+
+定义：在分类任务下，预测结果(Predicted Condition)与正确标记(True Condition)之间存在四种不同的组合，构成**混淆矩阵(Confusion Matrix)**
+
+![image-20260301211040046](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301211040279.png)
+
+#### 5.2 评估指标
+
+**准确率（Accuracy）：通用但有局限**
+
+准确率是“所有预测正确的样本占总样本的比例”，计算公式：
+$$
+Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+$$
+假设某地区癌症发病率为 5%（1000 人中 50 人患病，950 人健康）：
+
+- 若模型“全预测为健康”（不诊断出任何患者），则 TP=0，TN=950，FP=0，FN=50；
+- 准确率 = 950/(0+950+0+50)=95%（看似很高），但漏诊所有患者，完全失去医疗价值
+
+结论：癌症预测中，准确率无法反映模型核心能力，不能作为主要指标。
+
+****
+
+**精确率（Precision）**
+
+精确率计算公式：
+$$
+P = \dfrac{TP}{TP + FP}
+$$
+如何理解：“被诊断为患者的人中，真患病的比例”→ 控制误诊率
+
+****
+
+**召回率（Recall）**
+
+召回率计算公式
+$$
+R = \dfrac{TP}{TP + FN}
+$$
+如何理解：“真患病的人中，被诊断出来的比例”→ 控制漏诊率
+
+****
+
+**F1-Score**
+
+F1-Score是一个平衡精确率与召回率的一个指标，计算公式：
+$$
+F1 = \dfrac{2TP}{2TP + FP + FN}
+$$
+
+****
+
+**ROC 曲线与 AUC 值（了解）**
+
+- **TPR（真正率）**：正样本中被预测为正样本的概率（True Positive Rate） 比如：患者被正确诊断的比例（越高越好）TP/(TP+FN)
+- **FPR（假正率）**：负样本中被预测为正样本的概率（False Positive Rate） 比如：健康人被误诊为患者的比例（越低越好）FP/(FP+TN)
+
+ROC曲线：是一种常用于评估分类模型性能的可视化工具。ROC曲线以模型的真正率TPR为纵轴，假正率FPR为横轴，它将模型在不同阈值的表现以曲线的形式展现出来。
+
+![image-20260301211830725](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235347908.png)
+
+ROC 曲线图像中，4 个特殊点的含义：
+
+- (0,0) → 所有的负样本都预测正确，所有的正样本都预测错误。相当于点的(FPR值θ, TPR值θ)
+- (1,0) → 所有的负样本都预测错误，所有的正样本都预测错误。相当于点的(FPR值1, TPR值θ)
+- (1,1) → 所有的负样本都预测错误，表示所有的正样本都预测正确。相当于点的(FPR值1, TPR值1)
+- (0,1) → 所有的负样本都预测正确，表示所有的正样本都预测正确。相当于点的(FPR值θ, TPR值1)
+
+曲线越靠近 (0,1) 点则模型对正负样本的辨别能力就越强，也就是曲线和坐标轴围成的面积越大越好。
+
+而ROC曲线的优劣可以通过**曲线下的面积（AUC）**来衡量，AUC越大表示分类器性能越好。 
+
+- 当AUC=0.5时，表示分类器的性能等同于随机猜测
+- 当AUC=1时，表示分类器的性能完美，能够完全正确地将正负例分类。
+
+#### 5.3 API
+
+```python
+# 1. 导包
+from sklearn.model_selection import GridSearchCV
+# 2. 定义参数值
+param_grid = {'n_neighbors':[1,3,5,10]}
+# 3. 使用超参数网格搜索
+grid_model = GridSearchCV(estimator=knn, param_grid=param_grid, cv=5)
+# 4. 使用网格搜索，找到最好的模型
+grid_model.fit(X_train, y_train)            # 4组超参数，5折交叉验证，找到最好的模型
+
+# 5. 交叉验证网格搜索结果查看
+print(f"best_params:{grid_model.best_params_}")
+print(f"best_score:{grid_model.best_score_}")
+print(f"best_estimator:{grid_model.best_estimator_}")
+print(f"best_results:{grid_model.cv_results_}")
+
+# 可选：保存结果到文件中，方便查看
+# pd.DataFrame(grid_model.cv_results_).to_csv("knn_grid_results.csv", index=False)
+
+# 6. 模型评估
+print(f"训练集的准确率：{grid_model.score(X_train, y_train)}")
+print(f"测试集的准确率：{grid_model.score(X_test, y_test)}")
+```
+
+### 6. 回归算法-线性回归
+
+线性回归是最基础的一种监督学习回归算法，通过构建**线性数学模型**拟合特征与连续型标签的关系，预测结果为连续数值。
+
+案例：建立房子面积，房子位置，房子楼层，房子朝向等特征与房价之间的关系
+
+![image-20260301233951388](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235347909.png)
+
+<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301234019918.png" alt="image-20260301234019658" style="zoom: 50%;" />
+
+线性回归问题，就是找到上图中的这个面（不管是线，还是面，统称为：**超平面**）
+
+**核心思想：**
+
+**如何找到这个超平面**就是线性回归算法需要解决的问题。有如下两种方式：
+
+- 正规方程法
+- 梯度下降法
+
+#### 6.1 ⚠损失函数
+
+身高和体重的例子：
+
+![image-20260301234236030](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235330209.png)
+
+我们最终，模拟出来的线（超平面），肯定是和真实值有差距的。
+
+- **误差**：用（预测值 - 真实值）就是误差
+- **损失函数**：衡量每个样本的预测值与真实值误差的函数，也叫代价函数、成本函数等
+
+​	**损失函数：衡量「单个样本」预测得好不好 **
+
+​	**代价函数：衡量「整个数据集（或一个 batch）」预测得好不好**
+
+- 上图中，显然，红色的线更能拟合所有的点，也就是误差和最小
+
+那么问题又来了，**损失函数如何表达**呢？
+
+对于一元线性方程：y=kx+b来说，损失函数
+
+![image-20260301235321634](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235321838.png)
+
+对于多元线性方程：
+
+![image-20260301235400272](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235400480.png)
+
+换一种写法：
+
+![image-20260301235407709](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235407977.png)
+
+引入矩阵的概念，可以把上述式子简化为：
+
+![image-20260301235416991](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235417254.png)
+
+进一步可以把上述式子简化为：
+
+![image-20260301235421780](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235422057.png)
+
+其中
+
+![image-20260301235428941](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235429154.png)
+
+![image-20260301235437216](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235437485.png)
+
+损失函数为：
+
+![image-20260301235526827](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235527045.png)
+
+只要让**多元线性回归损失函数取最小值**，此时的权重 w*w* (w*w*就是一个向量) 就是最优解。求最优解的方法：
+
+- 正规方程法
+- 梯度下降法
+
+#### 6.2 ⚠正规方程法（了解）
+
+**正规方程法**：其实就是通过解数学公式，来解决线性回归的问题。 正规方程的推导：
+
+![image-20260301235650613](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235650853.png)
+
+举例：
+
+![image-20260301235739765](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260301235739991.png)
+
+#### 6.3 ⚠⚠梯度下降法（重要）
+
+梯度下降的基本过程就和下山的场景很类似。
+
+首先，我们有一个可微分的函数。这个函数就代表着一座山。 我们的目标就是找到这个函数的最小值，也就是山底。
+
+![image-20260302023108830](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302023109069.png)
+
+最快的下山的方式就是找到当前位置最陡峭的方向，然后沿着此方向向下走，对应到函数中，就是**找到给定点的梯度**，然后朝着梯度相反的方向，就能让函数值下降的最快！因为梯度的方向就是函数之变化最快的方向。所以，我们重复利用这个方法，**反复求取梯度**，最后就能到达局部的最小值，这就类似于我们下山的过程。而求取梯度就确定了最陡峭的方向，也就是场景中测量方向的手段。
+
+> **梯度：**
+>
+> 梯度是微积分中一个很重要的概念。
+>
+> 在单变量的函数中，梯度其实就是**函数的微分**，代表着函数在某个给定点的切线的**斜率**
+>
+> 在多变量函数中，梯度是一个**向量**，向量有方向，梯度的方向就指出了函数在给定点的**上升最快的方向**
+
+****
+
+**单变量函数的梯度下降**
+
+- 我们假设有一个单变量的函数：J(θ) = θ^2^
+- 函数的微分（导数、梯度）：J′(θ) = 2θ
+- 初始化，起点为：(1,1)
+- 学习率：α = 0.4
+
+接下来，我们开始进行梯度下降的迭代计算过程
+
+- θ^0^ = 1
+- θ^1^ = θ^0^ − α∗J′(θ^0^) = 1 − 0.4∗2∗1 = 0.2
+- θ^2^ = θ^1^ − α∗J′(θ^1^) = 0.2 − 0.4∗2∗0.2 = 0.04
+- θ^3^ = θ^2^ − α∗J′(θ^2^) = 0.04 − 0.4∗2∗0.04 = 0.008
+- θ^4^ = θ^3^ − α∗J′(θ^3^) = 0.008 − 0.4∗2∗0.008 = 0.0016
+
+如图，经过四次的运算，也就是走了四步，基本就抵达了函数的最低点，也就是山底
+
+<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302023802071.png" alt="image-20260302023801844" style="zoom: 50%;" />
+
+****
+
+**多变量函数的梯度下降**
+
+- 我们假设有一个目标函数：J(θ) = θ~1~^2^ + θ~2~^2^
+- 现在要通过梯度下降法计算这个函数的最小值。
+- 我们通过观察就能发现最小值其实就是 (0, 0) 点。但是接下来，我们会从梯度下降算法开始一步步计算到这个最小值
+- 我们假设初始的起点为：θ~0~ = (1, 3)
+- 函数的梯度为：∇J = (2θ~1~, 2θ~2~)，其实就是分别对θ~1~和θ~2~求偏导
+- 初始的学习率为α = 0.1
+
+接下来，我们开始进行梯度下降的迭代计算过程
+
+- θ~0~ = (1, 3)
+- θ~1~ = θ~0~ − α∇J(θ ~0~) = (1, 3) − 0.1(2, 6) = (0.8, 2.4)
+- θ~2~ = θ~1~ − α∇J(θ~1~) = (0.8, 2.4) − 0.1(2∗0.8, 2∗2.4) = (0.64,1.92)
+- θ~3~ = θ~2~ − α∇J(θ~2~) = (0.64, 1.92) − 0.1(2∗0.64, 2∗1.92) = (0.512, 1.536)
+- ...
+- θ~10~ = (0.10737, 0.3221)
+- ...
+- θ~100~ = (1.6296e−10, 4.8888e−10)
+
+我们发现，已经基本靠近函数的最小值点，如下图所示
+
+![image-20260302024427242](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302024427460.png)
+
+所以，**梯度下降的公式是**：（下面两种写法，表达的意思是一样的）
+
+![image-20260302024449451](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302024449642.png)
+
+![image-20260302024456201](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302024456448.png)
+
+**公式解释：**
+
+- **α是什么？**
+    1. α在梯度下降算法中被称作为**学习率（learning rate）**或者**步长**，意味着我们可以通过α来控制每一步走的距离。
+    2. α在机器学习中，**一般取0.001~0.01**
+    3. 梯度是上升最快的方向，我们需要是**下降最快**的方向，所以需要加负号
+- **α为什么不能取大了或者小了了**
+    1. 步长决定了在梯度下降迭代的过程中，每一步沿梯度负方向前进的长度
+    2. 学习率太小，下降的速度会慢，也就是收敛的速度会比较慢
+    3. 学习率太大，容易造成错过最低点、产生下降过程中的震荡
+
+![image-20260302024518302](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302024518510.png)
+
+- <img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302024745517.png" style="zoom: 67%;" />**如何理解？** 
+
+    这是一个偏导数的数学符号，其实就是梯度，也就是沿着各个特征方向的偏导数
+
+- **为什么有一个符号（或者说为什么要减）？** 
+
+    梯度前加一个负号，就意味着朝着梯度相反的方向前进
+
+![image-20260302024829962](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302024934547.png)
+
+**所以有了梯度下降这样一个优化算法，回归就有了“自动学习”（或者理解为自动调整）的能力**
+
+![image-20260302024917700](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302024917979.png)
+
+****
+
+**梯度下降方法介绍**
+
+常见的梯度下降算法有：
+
+- 全梯度下降算法(Full gradient descent, FGD)
+- 随机梯度下降算法（Stochastic gradient descent, SGD）
+- 随机平均梯度下降算法（Stochastic average gradient descent, SAGD）
+- 小批量梯度下降算法（Mini-batch gradient descent）
+
+##### 6.3.1 梯度下降迭代步骤
+
+[1] 初始化参数W，比如全0向量，n个特征就是n维向量 
+
+[2] 初始化学习率η，比如0.01 
+
+[3] 初始化迭代次数，比如100 
+
+[4] 每次迭代随机选取 1 个样本，计算目标函数对W的梯度
+
+![image-20260303235200918](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260303235201102.png)
+
+[5] 沿梯度反方向更新参数
+
+![image-20260303235208817](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260303235209091.png)
+
+[6] 重复步骤 4-5，直到迭代结束或误差收敛
+
+##### 6.3.2 全梯度下降算法（FGD）
+
+- **计算训练集所有样本误差，对其求和再取平均值作为目标函数**。
+- 权重向量沿其梯度相反的方向移动，从而使当前目标函数减少得最多。
+- 因为在执行每次更新时，我们需要在整个数据集上计算所有的梯度，所以**全梯度下降法的速度会很慢**，同时，全梯度下降法无法处理超出内存容量限制的数据集。（每次都要计算所有样本的梯度再求平均值）
+- 全梯度下降法同样也不能在线更新模型，即在**运行的过程中，不能增加新的样本**。
+- 其是在整个训练数据集上计算损失函数关于参数θ的梯度(对所有样本梯度求平均)
+
+![](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260303235314482.png)
+
+##### 6.3.3 随机梯度下降法（SGD）
+
+随机梯度下降，Stochastic Gradient Descent, SGD
+
+⚠**【FGD的缺点】**由于FGD每迭代更新一次权重都需要计算所有样本误差，而实际问题中经常有上亿的训练样本，故效率偏低，且**容易陷入局部最优解**，因此提出了随机梯度下降算法。
+
+其每轮计算的目标函数不再是全体样本误差，而仅是单个样本误差，即**每次只代入计算一个样本目标函数的梯度来更新权重**，再取下一个样本重复此过程，直到损失函数值停止下降或损失函数值小于某个可以容忍的阈值。
+
+此过程简单，高效，通常可以较好地避免更新迭代收敛到局部最优解。其迭代形式为
+
+![image-20260303235347701](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260303235347872.png)
+
+由于每次只使用一个样本迭代，由于随机性较大，SGD 通常不容易陷入局部最优，**但收敛过程不稳定，可能在最优点附近震荡，使用难度大**（深度学习阶段实例展示）。
+
+##### 6.3.4 小批量梯度下降算法（Mini-batch Gradient Descent）【实战最常用】
+
+小批量梯度下降算法是FGD和SGD的折中方案，在一定程度上兼顾了以上两种方法的优点。
+
+**每次从训练样本集上随机抽取一个小样本集**，在抽出来的小样本集上采用FGD迭代更新权重。
+
+被抽出的小样本集所含样本点的个数称为batch_size，通常设置为2的幂次方，更有利于GPU加速处理。
+
+特别的，若batch_size=1，则变成了SGD；若batch_size=n，则变成了FGD。其迭代形式为
+
+![image-20260303235547053](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260303235547237.png)
+
+##### 6.3.5 随机平均梯度下降法（Averaged SGD, ASGD）
+
+在**SGD**方法中，虽然避开了运算成本大的问题，但对于大数据训练而言，SGG效果常不尽如人意，因为每一轮梯度更新都完全与上一轮的数据和梯度无关。
+
+随机平均梯度算法克服了这个问题，在内存中**为每一个样本都维护一个旧的梯度**，**随机选择第i个样本来更新此样本的梯度**，其他样本的梯度保持不变，然后求得**所有梯度的平均值**，进而更新了参数。
+
+如此，每一轮更新仅需计算一个样本的梯度，计算成本等同于SGD，但**收敛速度快得多**。
+
+ASGD（Polyak-Ruppert Averaging）做的是：
+
+![image-20260303235620705](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260303235620870.png)
+
+也就是说：
+
+> 把所有历史参数做算术平均，最后用平均参数。
+
+👉一个是**空间上的平均（样本维度）**小批量梯度下降法 👉一个是**时间上的平均（训练步数维度）**
+
+占用空间太大，深度学习用的比较少
+
+Mini-batch Gradient Descent深度学习阶段高频使用，很重要，ASGD在深度学习中的EMA机制中使用。
+
+#### 6.4 回归模型评估方法
+
+线性回归的评估不同于分类，需衡量 **“预测值与真实值的误差大小”** ，常用 3 个指标：
+
+**1. 均方误差（MSE, Mean Squared Error）**
+
+![image-20260302213611282](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302213611519.png)
+
+平均平方误差，值越小越好，但是会放大异常项影响。
+
+**2. 均方根误差（RMSE, Root Mean Squared Error）**
+
+![image-20260302213629184](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302213629407.png)
+
+**3. 平均绝对误差（MAE, Mean Absolute Error）**
+
+![image-20260302213641581](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302213641886.png)
+
+n为样本数量，<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302213700998.png" alt="image-20260302213700716" style="zoom:50%;" />为预测值，<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302213717349.png" alt="image-20260302213717069" style="zoom:50%;" />为实际值，一般来说，模型越小，预测越准确。
+
+误差的“平均水平”，单位与标签一致，如房价预测 MAE=5 万，代表平均误差 5 万。
+
+**一般来说，通常使用 RMSE 和 MAE 这两个指标：**
+
+- MAE反映的是真实的平均误差，RMSE会将误差大的数据点放大
+- MAE不能体现误映射差大的数据点，因为被平均了；但是RMSE会，所以**RMSE对异常点会比较敏感**
+
+**综合结论：**
+
+- 都能反映出预测值和真实值之间的误差
+- MAE 对异常值不敏感，不会像 RMSE 那样放大较大的误差
+- RMSE会放大预测误差较大的样本的影响
+- RMSE对异常数据敏感
+
+#### 6.5 ⚠过拟合与欠拟合
+
+- **欠拟合**：模型在训练集上表现不好，在测试集上也表现不好。模型过于简单
+- **过拟合**：模型在训练集上表现很好，但是在测试集上表现不好。模型过于复杂
+- 欠拟合是模型在训练集和测试集的误差都比较大；过拟合是在训练集上误差小，在测试集上误差大
+
+![image-20260302214706180](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260302214706405.png)
+
+****
+
+**欠拟合出现的原因：**
+
+学习到数据的特征过少
+
+**欠拟合解决办法：**
+
+- 添加其他特征
+- 添加多项式特征项
+    模型过于简单时的常用套路，例如将线性模型通过添加二次项或三次项使模型泛化能力更强
+
+****
+
+**过拟合出现的原因：**
+
+原始特征过多，存在一些噪声特征 / 噪声较大的特征， 模型过于复杂是因为模型尝试去兼顾各个测试数据点
+
+**过拟合解决办法：**
+
+- 重新清洗数据
+    对于过多异常点数据、数据不纯的地方再处理
+- 增加数据
+- 正则化
+    解决模型过拟合的方法，在机器学习、深度学习大量使用
+- 减少特征维度，防止维度灾难（比如PCA）
+    由于特征多，样本数量少，导致学习不充分，泛化能力差
+
+#### 6.6 API
+
+```python
+# 线性回归
+# 这是使用正规方程法进行线性回归
+from sklearn.linear_model import LinearRegression
+reg1 = LinearRegression()
+
+# 使用随机梯度下降进行线性回归
+from sklearn.linear_model import SGDRegressor
+# 参数解释
+# loss: 损失函数，squared_error: 均方误差，最小二乘法
+# penalty: 正则化，l2: L2范数，l1: L1范数
+# alpha: 正则化强度
+# eta0: 学习率
+# learning_rate: 学习率策略，可选值：constant,optimal,invsclaing,adaptive
+    # invscaling: 每次迭代时学习率除以一个固定值，可以配置学习率随着迭代次数不断减小
+    # constant: 固定学习率
+    # optimal: 寻找最优解
+# max_iter: 最大迭代次数
+reg2 = SGDRegressor(loss="squared_error", eta0=0.01)
+```
+
+#### 6.7 线性回归通用流程
+
+[1] **准备数据**：特征X（连续型）、标签y（连续型），处理缺失值 / 异常值； 
+
+[2] **数据预处理**：
+
+- 正规方程法：可选标准化（无强制要求）
+- SGD 梯度下降法：必须标准化（StandardScaler） 
+
+[3] **划分训练集 / 测试集**（如 7:3 或者 8:2） 
+
+[4] **选择求解方法，训练模型**：
+
+- 小数据：正规方程法直接求W
+- 大数据：SGD 迭代更新参数 
+
+[5] **模型评估**：用回归指标（MSE、RMSE、MAE）评估预测效果 
+
+[6] **预测**：用训练好的参数预测新样本
+
+#### 6.8 ⚠梯度下降与正规方程区别
+
+![image-20260303011755817](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260303011853932.png)
+
+
+
+### 7. SGDRegressor() 里的 tol 参数是什么？
+
+tol 是“停止训练的容忍度阈值”（tolerance），用来控制是否提前停止训练（early stopping）。
+
+- 默认值：tol=1e-3
+
+- 作用：如果在若干个连续迭代（由 n_iter_no_change 决定）中，**损失的改进幅度始终“小于 tol”**，就认为已经“收敛”，提早停止，不再继续训练。
+
+- 直白一点：
+
+    - 每训练一轮（一个 epoch），SGDRegressor 会看这轮损失比前一轮有没有明显变小。
+
+    - 如果连续好几轮（n_iter_no_change）损失几乎不变（改进 < tol），就停止。
+
+**常见设置方式：**
+
+- 想更严格收敛（训练更久）：把 tol 设得更小，比如：
+
+ SGDRegressor(**tol****=**1e-4**,** **n_iter_no_change****=**5)
+
+- 想训练快点结束：把 tol 设大一点，比如 1e-2，模型看到改进不大就早点停。
+
+- 完全不想提前停止：tol=None（就只受 max_iter 限制）。
+
+### 8. 正则化线性模型
+
+**正则化的概念：**
+
+在模型训练时，数据中有些特征影响模型复杂度，或者某个特征的异常值比较多，所以要**尽量减少这个特征的影响，甚至删除某个特征的影响**，这就是正则化。
+
+**广义上，正则化是通过约束模型复杂度来【提升泛化能力】的一类方法**
+
+正则化的目的就是为了**解决过拟合**的问题。
+
+而正则化的常见做法是，在损失函数中增加正则化项，分为
+
+- L1 正则化
+- L2 正则化
+
+****
+
+#### 8.1 L1 正则化
+
+L1 正则化，在损失函数中添加 L1 正则化项。 L1 正则化容易引起稀疏解。
+
+<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260304010258817.png" alt="image-20260304010258612" style="zoom:67%;" />
+
+- *α* 叫做惩罚系数，该值越大则权重调整的幅度就越大，即：表示对特征权重惩罚力度就越大
+- **L1 正则化会使得权重趋向于 0，甚至等于 0**，使得某些特征失效，达到**特征筛选的目的**
+- 添加的正则化项，可以理解为 wi*w**i* 是权重的和，那么整体就是在限制所有特征权重的和在一定范围内
+
+<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260304010316162.png" alt="image-20260304010315987" style="zoom:67%;" />
+
+也就是，**L1 正则化，会使上述公式中的某些 wi\*w\**i\* 趋近于 0**，从而达到**特征筛选的目的**
+
+使用 **L1** 正则化的线性回归模型是 **Lasso 回归**
+
+****
+
+#### 8.2 L2 正则化
+
+L2 正则化，在损失函数中添加 L2 正则化项
+
+<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260304010341033.png" alt="image-20260304010340866" style="zoom: 67%;" />
+
+*α* 叫做惩罚系数，该值越大则权重调整的幅度就越大，即：表示对特征权重惩罚力度就越大
+
+**L2 正则化会使得高维权重趋向于 0，也就是会使得 θn,θn−1...\*θ\**n\*,\*θ\**n\*−1... 趋近于 0（让高阶项的系数趋近于0）**，从而简化函数，**平滑函数，减少过拟合的问题**
+
+<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260304010356899.png" alt="image-20260304010356728" style="zoom:67%;" />
+
+使用 **L2** 正则化的线性回归模型是 **岭回归**
+
+α=0*α*=0：岭回归退化为线性回归
+
+### 9. DataFrame.query()
+
+`df.query()` 是 Pandas 提供的一种 **用字符串写筛选条件** 的方法，相当于用“SQL 风格”的语法对行进行筛选。
+
+等价关系可以简单理解为：
+
+- 普通布尔索引：`df[df["age"] > 20]`
+
+- query 写法：`df.query("age > 20")`
+
+**基本语法：**
+
+==`df.query(expr, inplace=False)`==
+
+- expr：一个字符串形式的条件表达式
+
+- 返回值：满足条件的行组成的新 DataFrame（除非 inplace=True）
+
+------
+
+**与外部变量一起用：@ 符号**
+
+当条件中要使用 Python 变量 时，用 @变量名：
+
+```python
+threshold **=** 80
+city **=** "Beijing"
+df**.**query("score >= @threshold and city == @city")
+```
+
+------
+
+**对索引（index）筛选**
+
+如果想根据索引筛选，可以在表达式中使用 index：
+
+```python
+# 行索引是数字
+df.query("index > 10")
+
+# 行索引是字符串
+df.query("index == 'row_1'")
+```
+
+------
+
+**与普通布尔索引对比**
+
+- 相同点：都是按条件筛选行。
+
+- 不同点：
+
+- query 更适合长表达式、多条件组合，可读性好。
+
+- query 内部做了一些优化，在某些场景下会更快（尤其是大数据量、多条件时）。
+
+- 但它是基于字符串解析，写错变量名不会有 IDE 提示，要自己注意。
+
+## <span style='color:red'>Day13</span>
+
