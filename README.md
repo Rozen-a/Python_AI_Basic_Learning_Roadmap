@@ -30,11 +30,12 @@ WangDao_PythonAI/
 ├── Day11/                   # sklearn 数值预处理 / 特征选择 / 降维
 ├── Day12/                   # KNN、超参数搜索、分类评估
 ├── Day13/                   # 正则化回归、逻辑回归与优化
+├── Day14/                   # 神经网络与分类实战
 ├── 系统学习笔记/             # 系统学习的 Markdown 笔记
 │   ├── 1-Python基础笔记.md   # Day2–Day7 Python 基础与进阶总结
 │   ├── 2-数据分析笔记.md     # Day8–Day10 Numpy / Pandas / Matplotlib
 │   ├── 3-机器学习笔记.md     # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
-│   └── 4-深度学习.md         # Day13 下：PyTorch / 张量 / 自动微分 / Dataset & DataLoader
+│   └── 4-深度学习.md         # Day13 下–Day14：PyTorch / 神经网络 / 激活函数 / Fashion-MNIST 实战
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
 │   ├── 为什么标准化后均值为 0、标准差为 1.md
@@ -156,6 +157,14 @@ WangDao_PythonAI/
 - **自动微分与计算图**：`autograd` 机制、`backward()`、参数梯度 `grad`
 - **训练通用套路**：定义网络 / 损失函数 / 优化器，前向传播、反向传播与参数更新
 - **数据集与数据加载**：自定义 `Dataset`、使用 `DataLoader` 批量加载和打乱数据
+
+**Day14 - 神经网络与分类实战**
+- **人工神经网络（ANN）**：网络结构（输入层 / 隐藏层 / 输出层）、前向传播与反向传播
+- **激活函数**：Sigmoid / Tanh / ReLU / SoftMax 的特性、导数与选择策略
+- **损失函数对比**：交叉熵损失 vs 均方误差损失，分类任务中的优势
+- **数据集划分**：训练集 / 验证集 / 测试集的作用与划分原则
+- **全连接层**：`nn.Linear()` 原理、`nn.Flatten()` 处理高维数据
+- **Fashion-MNIST 实战**：完整分类流程（数据加载 / 模型搭建 / 训练评估 / 可视化）
 
 ---
 
