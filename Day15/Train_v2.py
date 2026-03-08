@@ -1,3 +1,7 @@
+"""
+基于Trainer.py的改进版
+1.新增早停功能(恢复最佳模型权重)
+"""
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -70,7 +74,7 @@ class Trainer:
         
         # 早停相关状态变量
         self.best_val_loss = float('inf')
-        self.best_val_acc = 0.0
+        self.best_val_acc = -float('inf')
         self.best_epoch = 0
         self.best_model_state = None
         

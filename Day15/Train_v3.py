@@ -1,21 +1,24 @@
 """
-最基础的训练器
-1.evaluating():评估模型
-2.train():训练模型
-3.plot_history():绘制训练历史曲线
+基于Train_v2.py的改进版
+1.将早停逻辑单独封装为_check_early_stopping()
+2.添加模型保存功能（可选保存最佳模型和每个epoch保存）
+3.模型保存功能封装为_save_model()
 """
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator  # 刻度定位器
+import os
 
 
 class Trainer:
     """模型训练器类，包含训练、评估和画图功能"""
     
     def __init__(self, model, criterion=None, optimizer=None, device=None, 
-                 train_loader=None, val_loader=None):
+                 train_loader=None, val_loader=None,
+                 early_stopping=True, patience=5, monitor='val_loss', min_delta=0.001, restore_best_weights=True,
+                 save_best_model=True, save_every_epoch=False, save_dir='./checkpoints', model_name='model'):
         """
         初始化训练器
         
@@ -26,6 +29,15 @@ class Trainer:
             device: 设备（cuda/cpu），默认自动选择
             train_loader: 训练数据加载器（可选，可在初始化时传入或train方法中传入）
             val_loader: 验证数据加载器（可选，可在初始化时传入或train方法中传入）
+            early_stopping: 是否启用早停，默认为False
+            patience: 早停耐心值，验证指标连续patience个epoch没有改善则停止训练，默认为5
+            monitor: 监控指标，'val_loss'（验证损失）或'val_acc'（验证准确率），默认为'val_loss'
+            min_delta: 最小改善幅度，只有改善超过min_delta才算有效改善，默认为0.001
+            restore_best_weights: 是否在早停后恢复最佳模型权重，默认为True
+            save_best_model: 是否保存最佳模型，默认为True
+            save_every_epoch: 是否每个epoch都保存模型，默认为False
+            save_dir: 模型保存目录，默认为'./checkpoints'
+            model_name: 模型名称（用于生成文件名），默认为'model'
         """
         self.model = model
         self.criterion = criterion if criterion is not None else nn.CrossEntropyLoss()
@@ -61,6 +73,30 @@ class Trainer:
         self.train_accuracies = []  # 训练准确率
         self.val_accuracies = []
         
+        # 早停相关配置（可在初始化时设置，也可在train方法中覆盖）
+        self.early_stopping = early_stopping
+        self.patience = patience
+        self.monitor = monitor
+        self.min_delta = min_delta
+        self.restore_best_weights = restore_best_weights
+        
+        # 早停相关状态变量
+        self.best_val_loss = float('inf')
+        self.best_val_acc = -float('inf')
+        self.best_epoch = 0
+        self.best_model_state = None
+        self.patience_counter = 0  # 早停计数器
+        
+        # 模型保存相关配置
+        self.save_best_model = save_best_model
+        self.save_every_epoch = save_every_epoch
+        self.save_dir = save_dir
+        self.model_name = model_name
+        
+        # 创建保存目录（如果不存在）
+        if save_best_model or save_every_epoch:
+            os.makedirs(save_dir, exist_ok=True)
+        
         # 打印初始化信息
         print("=" * 60)
         print("Trainer 初始化完成")
@@ -72,6 +108,12 @@ class Trainer:
             print(f"训练集: {len(train_loader.dataset)} 个样本, {len(train_loader)} 个批次")
         if val_loader is not None:
             print(f"验证集: {len(val_loader.dataset)} 个样本, {len(val_loader)} 个批次")
+        if early_stopping:
+            print(f"早停: 启用 (patience={patience}, monitor={monitor}, min_delta={min_delta})")
+        if save_best_model:
+            print(f"模型保存: 保存最佳模型 (保存目录: {save_dir})")
+        if save_every_epoch:
+            print(f"模型保存: 每个epoch都保存 (保存目录: {save_dir})")
         print("=" * 60)
     
     def evaluating(self, dataloader=None, verbose=True):
@@ -119,7 +161,133 @@ class Trainer:
         
         return avg_loss, avg_acc    # 返回平均损失和准确率
     
-    def train(self, train_loader=None, val_loader=None, num_epochs=10, verbose=True):
+    def _save_model(self, epoch=None, is_best=False, train_loss=None, train_acc=None, 
+                   val_loss=None, val_acc=None, model_state_dict=None, verbose=True):
+        """
+        保存模型
+        
+        Args:
+            epoch: 当前轮数（如果为None，则保存为最佳模型）
+            is_best: 是否为最佳模型，默认为False
+            train_loss: 训练损失（可选，用于保存到文件名或信息中）
+            train_acc: 训练准确率（可选）
+            val_loss: 验证损失（可选）
+            val_acc: 验证准确率（可选）
+            model_state_dict: 模型状态字典（可选，如果为None则使用当前模型状态）
+            verbose: 是否打印保存信息，默认为True
+        """
+        # 使用传入的模型状态或当前模型状态
+        if model_state_dict is None:
+            model_state_dict = self.model.state_dict()
+        
+        # 构建保存信息字典
+        save_info = {
+            'model_state_dict': model_state_dict,
+            'optimizer_state_dict': self.optimizer.state_dict(),
+        }
+        
+        # 添加训练信息（如果提供）
+        if epoch is not None:
+            save_info['epoch'] = epoch
+        if train_loss is not None:
+            save_info['train_loss'] = train_loss
+        if train_acc is not None:
+            save_info['train_acc'] = train_acc
+        if val_loss is not None:
+            save_info['val_loss'] = val_loss
+        if val_acc is not None:
+            save_info['val_acc'] = val_acc
+        
+        # 构建文件名
+        if is_best:
+            # 最佳模型文件名
+            filename = f"{self.model_name}_best.pth"
+        elif epoch is not None:
+            # 每个epoch的模型文件名（包含轮次）
+            filename = f"{self.model_name}_epoch_{epoch+1:04d}.pth"  # epoch是从0开始的，所以需要加1；将轮次格式化为4位数字
+        else:
+            # 默认文件名
+            filename = f"{self.model_name}.pth"
+        
+        # 完整路径
+        filepath = os.path.join(self.save_dir, filename)  # 将保存目录和文件名拼接成完整路径
+        
+        # 保存模型
+        torch.save(save_info, filepath)
+        
+        if verbose:
+            print(f"模型已保存: {filepath}")
+    
+    def _check_early_stopping(self, epoch, val_loss, val_acc, early_stopping, patience, 
+                              monitor, min_delta, restore_best_weights, verbose):
+        """
+        检查是否应该早停
+        
+        Args:
+            epoch: 当前轮数（从0开始）
+            val_loss: 当前验证损失
+            val_acc: 当前验证准确率
+            early_stopping: 是否启用早停
+            patience: 早停耐心值
+            monitor: 监控指标，'val_loss'或'val_acc'
+            min_delta: 最小改善幅度
+            restore_best_weights: 是否恢复最佳模型权重
+            verbose: 是否打印信息
+            
+        Returns:
+            should_stop: 是否应该早停（bool）
+        """
+        if not early_stopping:
+            return False
+        
+        improved = False  # 是否改善标志
+        
+        if monitor == 'val_loss':
+            # 监控验证损失，越小越好
+            if val_loss < self.best_val_loss - min_delta:
+                improved = True  # 设置为True，表示有改善
+                self.best_val_loss = val_loss  # 更新最佳验证损失
+                self.best_epoch = epoch + 1  # 更新最佳轮数
+                self.patience_counter = 0  # 重置早停计数器
+                # 保存最佳模型状态
+                if restore_best_weights:
+                    self.best_model_state = self.model.state_dict().copy()
+            else:  # 没有改善，增加早停计数器
+                self.patience_counter += 1
+        elif monitor == 'val_acc':
+            # 监控验证准确率，越大越好
+            if val_acc > self.best_val_acc + min_delta:
+                improved = True  # 设置为True，表示有改善
+                self.best_val_acc = val_acc  # 更新最佳验证准确率
+                self.best_epoch = epoch + 1  # 更新最佳轮数
+                self.patience_counter = 0  # 重置早停计数器
+                # 保存最佳模型状态
+                if restore_best_weights:
+                    self.best_model_state = self.model.state_dict().copy()
+            else:  # 没有改善，增加早停计数器
+                self.patience_counter += 1
+        
+        # 检查是否应该早停
+        if self.patience_counter >= patience:  # 如果早停计数器达到耐心值，则早停
+            if verbose:
+                print(f"\n早停触发！验证指标连续 {patience} 个epoch没有改善")
+                best_value = self.best_val_loss if monitor == 'val_loss' else self.best_val_acc
+                print(f"最佳轮数: {self.best_epoch}, 最佳{monitor}: {best_value:.4f}")
+            
+            # 恢复最佳模型权重
+            # 将模型参数回退到验证集上表现最好的轮次，而不是停留在早停时的状态，从而确保使用性能最好的模型
+            if restore_best_weights and self.best_model_state is not None:
+                self.model.load_state_dict(self.best_model_state)
+                if verbose:
+                    print("已恢复最佳模型权重")
+            
+            return True  # 返回True表示应该早停
+        
+        return False  # 返回False表示不应该早停
+    
+    def train(self, train_loader=None, val_loader=None, num_epochs=10, verbose=True,
+              early_stopping=None, patience=None, monitor=None, min_delta=None, restore_best_weights=None,
+              save_best_model=None, save_every_epoch=None):
         """
         训练模型
         
@@ -128,7 +296,25 @@ class Trainer:
             val_loader: 验证数据加载器（可选，如果为None则使用初始化时传入的val_loader）
             num_epochs: 训练轮数，默认为10
             verbose: 是否打印训练信息，默认为True
+            early_stopping: 是否启用早停（可选，如果为None则使用初始化时的设置）
+            patience: 早停耐心值（可选，如果为None则使用初始化时的设置）
+            monitor: 监控指标，'val_loss'或'val_acc'（可选，如果为None则使用初始化时的设置）
+            min_delta: 最小改善幅度（可选，如果为None则使用初始化时的设置）
+            restore_best_weights: 是否恢复最佳模型权重（可选，如果为None则使用初始化时的设置）
+            save_best_model: 是否保存最佳模型（可选，如果为None则使用初始化时的设置）
+            save_every_epoch: 是否每个epoch都保存（可选，如果为None则使用初始化时的设置）
         """
+        # 早停相关参数：使用传入的参数，如果为None则使用初始化时的设置
+        early_stopping = self.early_stopping if early_stopping is None else early_stopping
+        patience = self.patience if patience is None else patience
+        monitor = self.monitor if monitor is None else monitor
+        min_delta = self.min_delta if min_delta is None else min_delta
+        restore_best_weights = self.restore_best_weights if restore_best_weights is None else restore_best_weights
+        
+        # 模型保存相关参数：使用传入的参数，如果为None则使用初始化时的设置
+        save_best_model = self.save_best_model if save_best_model is None else save_best_model
+        save_every_epoch = self.save_every_epoch if save_every_epoch is None else save_every_epoch
+
         # 如果没有传入数据加载器，使用初始化时设置的
         if train_loader is None:
             if self.train_loader is None:
@@ -150,6 +336,12 @@ class Trainer:
             print(f"验证集: {len(val_loader.dataset)} 个样本, {len(val_loader)} 个批次")
             print(f"设备: {self.device}")
             print(f"优化器: {self.optimizer}")
+            if early_stopping:
+                print(f"早停: 启用 (patience={patience}, monitor={monitor}, min_delta={min_delta})")
+            if save_best_model:
+                print(f"模型保存: 保存最佳模型 (保存目录: {self.save_dir})")
+            if save_every_epoch:
+                print(f"模型保存: 每个epoch都保存 (保存目录: {self.save_dir})")
             print("=" * 60)
             print()
         
@@ -158,6 +350,13 @@ class Trainer:
         self.val_losses = []
         self.train_accuracies = []
         self.val_accuracies = []
+        
+        # 早停相关变量初始化
+        self.best_val_loss = float('inf')
+        self.best_val_acc = 0.0
+        self.best_epoch = 0
+        self.best_model_state = None
+        self.patience_counter = 0  # 早停计数器
         
         # 模型训练
         for epoch in range(num_epochs):
@@ -190,8 +389,37 @@ class Trainer:
             self.val_losses.append(val_loss)
             self.train_accuracies.append(train_acc)
             self.val_accuracies.append(val_acc)
+            
+            # 早停逻辑
+            should_stop = self._check_early_stopping(
+                epoch=epoch,
+                val_loss=val_loss,
+                val_acc=val_acc,
+                early_stopping=early_stopping,
+                patience=patience,
+                monitor=monitor,
+                min_delta=min_delta,
+                restore_best_weights=restore_best_weights,
+                verbose=verbose
+            )
+            
+            if should_stop:
+                break  # 提前结束训练
+            
+            # 每个epoch保存模型（如果开启）
+            if save_every_epoch:
+                self._save_model(
+                    epoch=epoch,
+                    is_best=False,
+                    train_loss=train_loss,
+                    train_acc=train_acc,
+                    val_loss=val_loss,
+                    val_acc=val_acc,
+                    verbose=verbose
+                )
 
-            if verbose:
+            # 打印训练信息
+            if verbose:  
                 print(f"Epoch [{epoch+1}/{num_epochs}], "
                       f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, "
                       f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
@@ -199,14 +427,50 @@ class Trainer:
         # 训练完成提示
         if verbose:
             print("\n" + "=" * 60)
-            print("训练完成！")
+            if early_stopping and self.patience_counter >= patience:
+                print("训练提前结束（早停）！")
+            else:
+                print("训练完成！")
             print("=" * 60)
-            print(f"总训练轮数: {num_epochs}")
+            print(f"总训练轮数(实际轮数/计划轮数): {len(self.train_losses)}/{num_epochs}")
+            print(f"最佳轮数: {self.best_epoch}")
+            if monitor == 'val_loss':
+                print(f"最佳验证损失: {self.best_val_loss:.4f}")
+            else:
+                print(f"最佳验证准确率: {self.best_val_acc:.4f}")
             print(f"最终训练损失: {self.train_losses[-1]:.4f}")
             print(f"最终训练准确率: {self.train_accuracies[-1]:.4f}")
             print(f"最终验证损失: {self.val_losses[-1]:.4f}")
             print(f"最终验证准确率: {self.val_accuracies[-1]:.4f}")
             print("=" * 60)
+        
+        # 训练完成后保存最佳模型
+        if save_best_model:
+            # 确定最佳模型的指标值
+            if monitor == 'val_loss':
+                best_val_loss = self.best_val_loss
+                best_val_acc = self.val_accuracies[self.best_epoch - 1] if self.best_epoch > 0 else self.val_accuracies[-1]
+                best_train_loss = self.train_losses[self.best_epoch - 1] if self.best_epoch > 0 else self.train_losses[-1]
+                best_train_acc = self.train_accuracies[self.best_epoch - 1] if self.best_epoch > 0 else self.train_accuracies[-1]
+            else:  # monitor == 'val_acc'
+                best_val_acc = self.best_val_acc
+                best_val_loss = self.val_losses[self.best_epoch - 1] if self.best_epoch > 0 else self.val_losses[-1]
+                best_train_loss = self.train_losses[self.best_epoch - 1] if self.best_epoch > 0 else self.train_losses[-1]
+                best_train_acc = self.train_accuracies[self.best_epoch - 1] if self.best_epoch > 0 else self.train_accuracies[-1]
+            
+            # 使用最佳模型状态（如果存在），否则使用当前模型状态
+            best_model_state = self.best_model_state if self.best_model_state is not None else self.model.state_dict()
+            
+            self._save_model(
+                epoch=self.best_epoch - 1 if self.best_epoch > 0 else len(self.train_losses) - 1,
+                is_best=True,
+                train_loss=best_train_loss,
+                train_acc=best_train_acc,
+                val_loss=best_val_loss,
+                val_acc=best_val_acc,
+                model_state_dict=best_model_state,
+                verbose=verbose
+            )
     
     def plot_history(self, figsize=(16, 5), verbose=True):
         """
@@ -332,18 +596,27 @@ if __name__ == '__main__':
     total_params = sum(p.numel() for p in model.parameters())
     print(f"模型参数总数: {total_params:,}")
     
-    # 5. 创建 Trainer 实例
+    # 5. 创建 Trainer 实例（在初始化时设置早停参数和模型保存参数）
     print("\n创建 Trainer...")
     trainer = Trainer(
         model=model,
         train_loader=train_loader,
-        val_loader=val_loader
+        val_loader=val_loader,
+        early_stopping=True,  # 在初始化时启用早停
+        patience=5,  # 连续5个epoch没有改善则停止
+        monitor='val_loss',  # 监控验证损失
+        min_delta=0.001,  # 最小改善幅度
+        restore_best_weights=True,  # 恢复最佳模型权重
+        save_best_model=True,  # 保存最佳模型
+        save_every_epoch=True,  # 每个epoch都保存模型
+        save_dir='./checkpoints/Train_v3_test',  # 模型保存目录
+        model_name='Train_v3_test'  # 模型名称
     )
     
-    # 6. 训练模型（减少训练轮数）
+    # 6. 训练模型（使用初始化时设置的早停参数）
     print("\n开始训练...")
-    num_epochs = 111  # 减少到3个epoch，快速验证
-    trainer.train(num_epochs=num_epochs)
+    num_epochs = 111  # 设置最大训练轮数
+    trainer.train(num_epochs=num_epochs)  # 早停参数已在初始化时设置，这里可以省略
     
     # 7. 评估模型
     print("\n评估模型...")
