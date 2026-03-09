@@ -32,10 +32,10 @@ WangDao_PythonAI/
 ├── Day13/                   # 正则化回归、逻辑回归与优化
 ├── Day14/                   # 神经网络与分类实战
 ├── Day15/                   # 深度学习进阶与训练技巧
-├── 系统学习笔记/             # 系统学习的 Markdown 笔记
+├── 系统学习笔记/              # 系统学习的 Markdown 笔记
 │   ├── 1-Python基础笔记.md   # Day2–Day7 Python 基础与进阶总结
-│   ├── 2-数据分析笔记.md     # Day8–Day10 Numpy / Pandas / Matplotlib
-│   ├── 3-机器学习笔记.md     # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
+│   ├── 2-数据分析笔记.md      # Day8–Day10 Numpy / Pandas / Matplotlib
+│   ├── 3-机器学习笔记.md      # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
 │   └── 4-深度学习.md         # Day13 下–Day15：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / Fashion-MNIST 实战
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
@@ -48,11 +48,12 @@ WangDao_PythonAI/
 
 ---
 
-### 阶段一：Python 基础（Day2–Day7）
+#### 阶段一：Python 基础（Day2–Day7）
 
 > 目标：打牢 Python 语法与数据结构基础，熟悉函数与面向对象编程。
 
 **Day2 - Python 基础入门**
+
 - **基础语法**：变量、输入输出、表达式与运算符（算术 / 比较 / 逻辑）
 - **控制流**：if-elif-else、while / for 循环、range、三目运算符
 - **字符串插值**：f-string、`str.format()`、`%` 格式化
@@ -92,11 +93,12 @@ WangDao_PythonAI/
 
 ---
 
-### 阶段二：数据分析与可视化（Day8–Day10）
+#### 阶段二：数据分析与可视化（Day8–Day10）
 
 > 目标：掌握 Matplotlib / Numpy / Pandas 的核心用法，能完成基础数据分析与可视化。
 
 **Day8 - Matplotlib 数据可视化**
+
 - **Jupyter 快捷键** 与 Notebook 使用
 - **基础绘图**：折线图、设置颜色 / 线型 / 标记、画布大小与保存 (`figure` / `savefig`)
 - **坐标轴控制**：刻度与标签、中文字体与负号显示、网格、图例
@@ -119,7 +121,7 @@ WangDao_PythonAI/
 
 ---
 
-### 阶段三：机器学习与模型优化（Day10 下–Day13 上）
+#### 阶段三：机器学习与模型优化（Day10 下–Day13 上）
 
 > 目标：掌握 sklearn 中的预处理、特征工程、典型分类 / 回归算法与评估方法。
 
@@ -149,7 +151,7 @@ WangDao_PythonAI/
 
 ---
 
-### 阶段四：深度学习入门
+#### 阶段四：深度学习入门（Day13 下–Day15）
 
 > 目标：完成从传统机器学习到深度学习的过渡，掌握 PyTorch 基础与训练流程。
 
