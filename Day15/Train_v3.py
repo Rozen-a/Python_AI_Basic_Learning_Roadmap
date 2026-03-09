@@ -3,6 +3,7 @@
 1.将早停逻辑单独封装为_check_early_stopping()
 2.添加模型保存功能（可选保存最佳模型和每个epoch保存）
 3.模型保存功能封装为_save_model()
+4.修正早停触发时，触发早停的epoch的训练及验证结果未被打印的问题
 """
 import torch
 import torch.nn as nn
@@ -10,6 +11,7 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator  # 刻度定位器
 import os
+import __main__
 
 
 class Trainer:
@@ -18,7 +20,7 @@ class Trainer:
     def __init__(self, model, criterion=None, optimizer=None, device=None, 
                  train_loader=None, val_loader=None,
                  early_stopping=True, patience=5, monitor='val_loss', min_delta=0.001, restore_best_weights=True,
-                 save_best_model=True, save_every_epoch=False, save_dir='./checkpoints', model_name='model'):
+                 save_best_model=True, save_every_epoch=False, save_dir='./checkpoints', model_name=None):
         """
         初始化训练器
         
@@ -37,7 +39,8 @@ class Trainer:
             save_best_model: 是否保存最佳模型，默认为True
             save_every_epoch: 是否每个epoch都保存模型，默认为False
             save_dir: 模型保存目录，默认为'./checkpoints'
-            model_name: 模型名称（用于生成文件名），默认为'model'
+            model_name: 模型名称（用于生成文件名），
+                        默认为：训练脚本文件名（不含扩展名） + '_model'
         """
         self.model = model
         self.criterion = criterion if criterion is not None else nn.CrossEntropyLoss()
@@ -91,7 +94,17 @@ class Trainer:
         self.save_best_model = save_best_model
         self.save_every_epoch = save_every_epoch
         self.save_dir = save_dir
-        self.model_name = model_name
+        # 模型名称：默认使用“训练脚本文件名_model”
+        if model_name is None:
+            # 优先使用主运行脚本的文件名；如果没有（例如在Notebook中），则退回当前文件名
+            script_file = getattr(__main__, '__file__', None)
+            if script_file is not None:
+                base_name = os.path.splitext(os.path.basename(script_file))[0]
+            else:
+                base_name = os.path.splitext(os.path.basename(__file__))[0]
+            self.model_name = f"{base_name}_model"
+        else:
+            self.model_name = model_name
         
         # 创建保存目录（如果不存在）
         if save_best_model or save_every_epoch:
@@ -104,6 +117,7 @@ class Trainer:
         print(f"设备: {self.device}")
         print(f"损失函数: {self.criterion}")
         print(f"优化器: {self.optimizer}")
+        print(f"模型名称: {self.model_name}")
         if train_loader is not None:
             print(f"训练集: {len(train_loader.dataset)} 个样本, {len(train_loader)} 个批次")
         if val_loader is not None:
@@ -390,6 +404,12 @@ class Trainer:
             self.train_accuracies.append(train_acc)
             self.val_accuracies.append(val_acc)
             
+            # 打印训练信息（先打印，再检查早停，这样触发早停的epoch也会在日志中出现）
+            if verbose:  
+                print(f"Epoch [{epoch+1}/{num_epochs}], "
+                      f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, "
+                      f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
+            
             # 早停逻辑
             should_stop = self._check_early_stopping(
                 epoch=epoch,
@@ -417,12 +437,6 @@ class Trainer:
                     val_acc=val_acc,
                     verbose=verbose
                 )
-
-            # 打印训练信息
-            if verbose:  
-                print(f"Epoch [{epoch+1}/{num_epochs}], "
-                      f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, "
-                      f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
         
         # 训练完成提示
         if verbose:
@@ -610,7 +624,7 @@ if __name__ == '__main__':
         save_best_model=True,  # 保存最佳模型
         save_every_epoch=True,  # 每个epoch都保存模型
         save_dir='./checkpoints/Train_v3_test',  # 模型保存目录
-        model_name='Train_v3_test'  # 模型名称
+        # model_name='Train_v3_test'  # 模型名称
     )
     
     # 6. 训练模型（使用初始化时设置的早停参数）
