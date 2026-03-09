@@ -31,11 +31,12 @@ WangDao_PythonAI/
 ├── Day12/                   # KNN、超参数搜索、分类评估
 ├── Day13/                   # 正则化回归、逻辑回归与优化
 ├── Day14/                   # 神经网络与分类实战
+├── Day15/                   # 深度学习进阶与训练技巧
 ├── 系统学习笔记/             # 系统学习的 Markdown 笔记
 │   ├── 1-Python基础笔记.md   # Day2–Day7 Python 基础与进阶总结
 │   ├── 2-数据分析笔记.md     # Day8–Day10 Numpy / Pandas / Matplotlib
 │   ├── 3-机器学习笔记.md     # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
-│   └── 4-深度学习.md         # Day13 下–Day14：PyTorch / 神经网络 / 激活函数 / Fashion-MNIST 实战
+│   └── 4-深度学习.md         # Day13 下–Day15：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / Fashion-MNIST 实战
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
 │   ├── 为什么标准化后均值为 0、标准差为 1.md
@@ -165,6 +166,14 @@ WangDao_PythonAI/
 - **数据集划分**：训练集 / 验证集 / 测试集的作用与划分原则
 - **全连接层**：`nn.Linear()` 原理、`nn.Flatten()` 处理高维数据
 - **Fashion-MNIST 实战**：完整分类流程（数据加载 / 模型搭建 / 训练评估 / 可视化）
+
+**Day15 - 深度学习进阶与训练技巧**
+- **权重初始化**：均匀 / 正态分布，对比 Xavier 与 Kaiming 初始化及与激活函数的匹配
+- **图像预处理**：`ToTensor` 与 `Normalize` 实现图像归一化与标准化
+- **训练过程控制**：早停（Early Stopping）参数含义、典型使用流程
+- **模型保存与可视化**：`torch.save` / `torch.load`、TensorBoard 日志记录与曲线查看
+- **网络结构与正则化**：使用 `nn.Sequential` 构建 DNN，结合 BatchNorm、Dropout / AlphaDropout 缓解过拟合与梯度问题
+- **Fashion-MNIST DNN 系列实战**：多种训练脚本，对比标准化、早停、BN、SELU、AlphaDropout 等配置效果
 
 ---
 
