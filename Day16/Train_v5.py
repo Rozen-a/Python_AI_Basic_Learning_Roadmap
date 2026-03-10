@@ -1,7 +1,6 @@
 """
-基于Train_v3.py的改进版
-1.修正早停触发时，触发早停的epoch的模型未被保存问题
-2.添加回归任务训练功能
+基于Train_v4.py的改进版
+1. 添加二分类的训练和评估方法
 """
 import torch
 import torch.nn as nn
@@ -172,6 +171,60 @@ class Trainer:
             print(f"评估完成 - 损失: {avg_loss:.4f}, 准确率: {avg_acc:.4f} ({correct}/{total})")
         
         return avg_loss, avg_acc    # 返回平均损失和准确率  
+
+    def evaluating_binary_classification(self, dataloader=None, verbose=True):
+        """
+        二分类任务评估函数（适用于输出为单个logit并使用BCEWithLogitsLoss等情况）
+        
+        Args:
+            dataloader: 数据加载器（可选，如果为None则使用初始化时传入的val_loader）
+            verbose: 是否打印评估信息，默认为True
+            
+        Returns:
+            avg_loss: 平均损失
+            avg_acc: 准确率
+        """
+        # 如果没有传入dataloader，使用初始化时设置的val_loader
+        if dataloader is None:
+            if self.val_loader is None:
+                raise ValueError("请提供dataloader参数，或在初始化时设置val_loader")
+            dataloader = self.val_loader
+        
+        if verbose:
+            print(f"\n开始评估二分类模型...")
+            print(f"评估数据集: {len(dataloader.dataset)} 个样本, {len(dataloader)} 个批次")
+        
+        self.model.eval()
+        correct = 0
+        total = 0
+        loss_sum = 0.0
+        
+        with torch.no_grad():
+            for inputs, labels in dataloader:
+                inputs = inputs.to(self.device)
+                labels = labels.to(self.device)
+                
+                # 假设模型输出为形状 (N, 1) 或 (N,)
+                logits = self.model(inputs)
+                logits = logits.view(-1)
+                targets = labels.view(-1).float()
+                
+                # 计算损失
+                loss = self.criterion(logits, targets)
+                loss_sum += loss.item() * targets.size(0)
+                
+                # 直接使用 logit 的符号做分类：logit >= 0 视为正类1，否则为0
+                preds = (logits >= 0).long()
+                total += targets.size(0)
+                correct += (preds == targets.long()).sum().item()
+        
+        avg_loss = loss_sum / total
+        avg_acc = correct / total
+        
+        if verbose:
+            print(f"评估完成 - 损失: {avg_loss:.4f}, 准确率: {avg_acc:.4f} ({correct}/{total})")
+        
+        return avg_loss, avg_acc
 
     def evaluating_regression(self, dataloader=None, verbose=True):
         """
@@ -476,6 +529,199 @@ class Trainer:
             
             if should_stop:
                 break  # 提前结束训练
+        
+        # 训练完成提示
+        if verbose:
+            print("\n" + "=" * 60)
+            if early_stopping and self.patience_counter >= patience:
+                print("训练提前结束（早停）！")
+            else:
+                print("训练完成！")
+            print("=" * 60)
+            print(f"总训练轮数(实际轮数/计划轮数): {len(self.train_losses)}/{num_epochs}")
+            print(f"最佳轮数: {self.best_epoch}")
+            if monitor == 'val_loss':
+                print(f"最佳验证损失: {self.best_val_loss:.4f}")
+            else:
+                print(f"最佳验证准确率: {self.best_val_acc:.4f}")
+            print(f"最终训练损失: {self.train_losses[-1]:.4f}")
+            print(f"最终训练准确率: {self.train_accuracies[-1]:.4f}")
+            print(f"最终验证损失: {self.val_losses[-1]:.4f}")
+            print(f"最终验证准确率: {self.val_accuracies[-1]:.4f}")
+            print("=" * 60)
+        
+        # 训练完成后保存最佳模型
+        if save_best_model:
+            # 确定最佳模型的指标值
+            if monitor == 'val_loss':
+                best_val_loss = self.best_val_loss
+                best_val_acc = self.val_accuracies[self.best_epoch - 1] if self.best_epoch > 0 else self.val_accuracies[-1]
+                best_train_loss = self.train_losses[self.best_epoch - 1] if self.best_epoch > 0 else self.train_losses[-1]
+                best_train_acc = self.train_accuracies[self.best_epoch - 1] if self.best_epoch > 0 else self.train_accuracies[-1]
+            else:  # monitor == 'val_acc'
+                best_val_acc = self.best_val_acc
+                best_val_loss = self.val_losses[self.best_epoch - 1] if self.best_epoch > 0 else self.val_losses[-1]
+                best_train_loss = self.train_losses[self.best_epoch - 1] if self.best_epoch > 0 else self.train_losses[-1]
+                best_train_acc = self.train_accuracies[self.best_epoch - 1] if self.best_epoch > 0 else self.train_accuracies[-1]
+            
+            # 使用最佳模型状态（如果存在），否则使用当前模型状态
+            best_model_state = self.best_model_state if self.best_model_state is not None else self.model.state_dict()
+            
+            self._save_model(
+                epoch=self.best_epoch - 1 if self.best_epoch > 0 else len(self.train_losses) - 1,
+                is_best=True,
+                train_loss=best_train_loss,
+                train_acc=best_train_acc,
+                val_loss=best_val_loss,
+                val_acc=best_val_acc,
+                model_state_dict=best_model_state,
+                verbose=verbose
+            )
+
+    def train_binary_classification(self, train_loader=None, val_loader=None, num_epochs=10, verbose=True,
+              early_stopping=None, patience=None, monitor=None, min_delta=None, restore_best_weights=None,
+              save_best_model=None, save_every_epoch=None):
+        """
+        二分类任务训练函数（适用于输出为单个logit并使用BCEWithLogitsLoss等情况）
+        
+        Args:
+            train_loader: 训练数据加载器（可选，如果为None则使用初始化时传入的train_loader）
+            val_loader: 验证数据加载器（可选，如果为None则使用初始化时传入的val_loader）
+            num_epochs: 训练轮数，默认为10
+            verbose: 是否打印训练信息，默认为True
+            early_stopping: 是否启用早停（可选，如果为None则使用初始化时的设置）
+            patience: 早停耐心值（可选，如果为None则使用初始化时的设置）
+            monitor: 监控指标，'val_loss'或'val_acc'（可选，如果为None则使用初始化时的设置）
+            min_delta: 最小改善幅度（可选，如果为None则使用初始化时的设置）
+            restore_best_weights: 是否恢复最佳模型权重（可选，如果为None则使用初始化时的设置）
+            save_best_model: 是否保存最佳模型（可选，如果为None则使用初始化时的设置）
+            save_every_epoch: 是否每个epoch都保存（可选，如果为None则使用初始化时的设置）
+        """
+        # 早停相关参数：使用传入的参数，如果为None则使用初始化时的设置
+        early_stopping = self.early_stopping if early_stopping is None else early_stopping
+        patience = self.patience if patience is None else patience
+        monitor = self.monitor if monitor is None else monitor
+        min_delta = self.min_delta if min_delta is None else min_delta
+        restore_best_weights = self.restore_best_weights if restore_best_weights is None else restore_best_weights
+        
+        # 模型保存相关参数：使用传入的参数，如果为None则使用初始化时的设置
+        save_best_model = self.save_best_model if save_best_model is None else save_best_model
+        save_every_epoch = self.save_every_epoch if save_every_epoch is None else save_every_epoch
+
+        # 如果没有传入数据加载器，使用初始化时设置的
+        if train_loader is None:
+            if self.train_loader is None:
+                raise ValueError("请提供train_loader参数，或在初始化时设置train_loader")
+            train_loader = self.train_loader
+        
+        if val_loader is None:
+            if self.val_loader is None:
+                raise ValueError("请提供val_loader参数，或在初始化时设置val_loader")
+            val_loader = self.val_loader
+        
+        # 打印训练配置信息
+        if verbose:
+            print("\n" + "=" * 60)
+            print("开始训练二分类模型")
+            print("=" * 60)
+            print(f"训练轮数: {num_epochs}")
+            print(f"训练集: {len(train_loader.dataset)} 个样本, {len(train_loader)} 个批次")
+            print(f"验证集: {len(val_loader.dataset)} 个样本, {len(val_loader)} 个批次")
+            print(f"设备: {self.device}")
+            print(f"优化器: {self.optimizer}")
+            if early_stopping:
+                print(f"早停: 启用 (patience={patience}, monitor={monitor}, min_delta={min_delta})")
+            if save_best_model:
+                print(f"模型保存: 保存最佳模型 (保存目录: {self.save_dir})")
+            if save_every_epoch:
+                print(f"模型保存: 每个epoch都保存 (保存目录: {self.save_dir})")
+            print("=" * 60)
+            print()
+        
+        # 清空历史记录
+        self.train_losses = []
+        self.val_losses = []
+        self.train_accuracies = []
+        self.val_accuracies = []
+        
+        # 早停相关变量初始化
+        self.best_val_loss = float('inf')
+        self.best_val_acc = 0.0
+        self.best_epoch = 0
+        self.best_model_state = None
+        self.patience_counter = 0  # 早停计数器
+        
+        # 模型训练
+        for epoch in range(num_epochs):
+            self.model.train()
+            running_loss = 0.0
+            train_correct = 0
+            train_total = 0
+            
+            for inputs, labels in train_loader:
+                inputs = inputs.to(self.device)
+                labels = labels.to(self.device)
+
+                # 假设模型输出为形状 (N, 1) 或 (N,)
+                logits = self.model(inputs)
+                logits = logits.view(-1)  # [N, 1] -> [N,]
+                targets = labels.view(-1).float()
+
+                # 计算损失
+                self.optimizer.zero_grad()
+                loss = self.criterion(logits, targets)
+                loss.backward()
+                self.optimizer.step()
+
+                running_loss += loss.item() * targets.size(0)
+                # 计算准确率：logit >= 0 判为1，否则为0
+                preds = (logits >= 0).long()
+                train_total += targets.size(0)
+                train_correct += (preds == targets.long()).sum().item()
+                
+            # 计算平均损失和准确率
+            train_loss = running_loss / len(train_loader.dataset)
+            train_acc = train_correct / train_total
+            # 用验证集评估模型，获得平均损失和准确率
+            val_loss, val_acc = self.evaluating_binary_classification(val_loader, verbose=False)
+            # 保存损失和准确率
+            self.train_losses.append(train_loss)
+            self.val_losses.append(val_loss)
+            self.train_accuracies.append(train_acc)
+            self.val_accuracies.append(val_acc)
+            # 打印训练信息
+            if verbose:
+                print(f"Epoch [{epoch+1}/{num_epochs}], "
+                      f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, "
+                      f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
+            
+            # 每个epoch保存模型（如果开启）
+            if save_every_epoch:
+                self._save_model(
+                    epoch=epoch,
+                    is_best=False,
+                    train_loss=train_loss,
+                    train_acc=train_acc,
+                    val_loss=val_loss,
+                    val_acc=val_acc,
+                    verbose=verbose
+                )
+
+            # 早停逻辑
+            should_stop = self._check_early_stopping(
+                epoch=epoch,
+                val_loss=val_loss,
+                val_acc=val_acc,
+                early_stopping=early_stopping,
+                patience=patience,
+                monitor=monitor,
+                min_delta=min_delta,
+                restore_best_weights=restore_best_weights,
+                verbose=verbose
+            )
+            
+            if should_stop:
+                break
         
         # 训练完成提示
         if verbose:
@@ -855,8 +1101,6 @@ def test_classification():
         restore_best_weights=True,  # 恢复最佳模型权重
         save_best_model=True,  # 保存最佳模型
         save_every_epoch=True,  # 每个epoch都保存模型
-        save_dir='./checkpoints/Train_v4_test_classification',  # 模型保存目录
-        model_name='Train_v4_test_classification'  # 模型名称
     )
     
     # 6. 训练模型（使用初始化时设置的早停参数）
@@ -966,8 +1210,6 @@ def test_regression():
         restore_best_weights=True,  # 恢复最佳模型权重
         save_best_model=True,  # 保存最佳模型
         save_every_epoch=True,  # 每个epoch都保存模型
-        save_dir='./checkpoints/Train_v4_test_regression',  # 模型保存目录
-        model_name='Train_v4_test_regression'  # 模型名称
     )
     
     # 7. 训练模型（使用初始化时设置的早停参数）
@@ -989,7 +1231,109 @@ def test_regression():
     print("=" * 60)
 
 
+def test_binary_classification():
+    """
+    使用随机生成的简单数据测试 Trainer 类二分类任务
+    """
+    print("=" * 60)
+    print("Trainer 类二分类任务测试示例")
+    print("=" * 60)
+    
+    # 1. 创建一个简单的二分类神经网络模型（输出单个logit）
+    class SimpleBinaryModel(nn.Module):
+        def __init__(self, input_size=20, hidden_size=32):
+            super().__init__()
+            self.fc1 = nn.Linear(input_size, hidden_size)
+            self.relu = nn.ReLU()
+            self.fc2 = nn.Linear(hidden_size, 1)  # 输出1维logit
+        
+        def forward(self, x):
+            x = self.fc1(x)
+            x = self.relu(x)
+            x = self.fc2(x)  # 不做sigmoid，由损失函数和评估函数内部处理
+            return x
+    
+    # 2. 生成随机训练数据
+    print("\n生成随机数据（二分类）...")
+    torch.manual_seed(123)
+    num_train_samples = 200
+    num_val_samples = 80
+    input_size = 20
+    
+    # 构造一个简单的线性可分任务：根据特征和的正负决定标签，再加一点噪声
+    train_features = torch.randn(num_train_samples, input_size)
+    train_scores = train_features.sum(dim=1) + 0.5 * torch.randn(num_train_samples)
+    train_labels = (train_scores > 0).long()  # 0 / 1
+    
+    val_features = torch.randn(num_val_samples, input_size)
+    val_scores = val_features.sum(dim=1) + 0.5 * torch.randn(num_val_samples)
+    val_labels = (val_scores > 0).long()
+    
+    print(f"训练集: {num_train_samples} 个样本")
+    print(f"验证集: {num_val_samples} 个样本")
+    
+    # 3. 创建数据加载器
+    from torch.utils.data import TensorDataset, DataLoader
+    
+    train_dataset = TensorDataset(train_features, train_labels)
+    val_dataset = TensorDataset(val_features, val_labels)
+    
+    batch_size = 32
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    
+    print(f"批次大小: {batch_size}")
+    print(f"训练批次数: {len(train_loader)}")
+    print(f"验证批次数: {len(val_loader)}")
+    
+    # 4. 创建模型实例
+    print("\n创建模型...")
+    model = SimpleBinaryModel(input_size=input_size, hidden_size=32)
+    
+    # 计算模型参数数量
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"模型参数总数: {total_params:,}")
+    
+    # 5. 创建损失函数（二分类使用BCEWithLogitsLoss）
+    criterion = nn.BCEWithLogitsLoss()
+    
+    # 6. 创建 Trainer 实例
+    print("\n创建 Trainer...")
+    trainer = Trainer(
+        model=model,
+        criterion=criterion,  # 使用BCEWithLogitsLoss
+        train_loader=train_loader,
+        val_loader=val_loader,
+        early_stopping=True,
+        patience=5,
+        monitor='val_loss',   # 可以改为 'val_acc' 监控准确率
+        min_delta=0.001,
+        restore_best_weights=True,
+        save_best_model=True,
+        save_every_epoch=False,
+    )
+    
+    # 7. 训练模型
+    print("\n开始训练（二分类）...")
+    num_epochs = 50
+    trainer.train_binary_classification(num_epochs=num_epochs)
+    
+    # 8. 评估模型
+    print("\n评估模型（二分类）...")
+    val_loss, val_acc = trainer.evaluating_binary_classification()
+    print(f"最终验证结果（二分类） - 损失: {val_loss:.4f}, 准确率: {val_acc:.4f}")
+    
+    # 9. 绘制训练历史曲线
+    print("\n绘制训练历史曲线（二分类）...")
+    trainer.plot_history()
+    
+    print("\n" + "=" * 60)
+    print("二分类测试完成！")
+    print("=" * 60)
+
+
 if __name__ == '__main__':
-    test_classification()  # 测试分类任务
-    test_regression()  # 测试回归任务（取消注释以运行）
+    # test_classification()  # 测试分类任务
+    # test_regression()  # 测试回归任务（取消注释以运行）
+    test_binary_classification()  # 测试二分类任务（取消注释以运行）
     

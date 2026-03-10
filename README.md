@@ -32,11 +32,12 @@ WangDao_PythonAI/
 ├── Day13/                   # 正则化回归、逻辑回归与优化
 ├── Day14/                   # 神经网络与分类实战
 ├── Day15/                   # 深度学习进阶与训练技巧
+├── Day16/                   # 深度学习拓展：回归/超参搜索、Embedding/Pooling、RNN
 ├── 系统学习笔记/              # 系统学习的 Markdown 笔记
 │   ├── 1-Python基础笔记.md   # Day2–Day7 Python 基础与进阶总结
 │   ├── 2-数据分析笔记.md      # Day8–Day10 Numpy / Pandas / Matplotlib
 │   ├── 3-机器学习笔记.md      # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
-│   └── 4-深度学习.md         # Day13 下–Day15：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / Fashion-MNIST 实战
+│   └── 4-深度学习.md         # Day13 下–Day16：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / 实战
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
 │   ├── 为什么标准化后均值为 0、标准差为 1.md
@@ -151,7 +152,7 @@ WangDao_PythonAI/
 
 ---
 
-#### 阶段四：深度学习入门（Day13 下–Day15）
+#### 阶段四：深度学习入门（Day13 下–Day16）
 
 > 目标：完成从传统机器学习到深度学习的过渡，掌握 PyTorch 基础与训练流程。
 
@@ -176,6 +177,14 @@ WangDao_PythonAI/
 - **模型保存与可视化**：`torch.save` / `torch.load`、TensorBoard 日志记录与曲线查看
 - **网络结构与正则化**：使用 `nn.Sequential` 构建 DNN，结合 BatchNorm、Dropout / AlphaDropout 缓解过拟合与梯度问题
 - **Fashion-MNIST DNN 系列实战**：多种训练脚本，对比标准化、早停、BN、SELU、AlphaDropout 等配置效果
+
+**Day16 - 深度学习拓展与 NLP 入门**
+- **超参数搜索**：Grid / Random / 遗传算法 / AutoML 思路；学习率与 Batch Size 影响
+- **RNN 基础**：循环结构、隐藏状态、时间展开与计算公式
+- **Embedding 与文本处理**：Word2Vec vs Embedding；序列的 embedding / padding / pooling
+- **二分类方案**：BCE vs Softmax 二分类
+- **DataLoader 高级**：`collate_fn`、`zip(*batch)`、`functools.partial` 的用法
+- **数据集缓存**：sklearn `data_home` 参数与本地缓存目录
 
 ---
 
