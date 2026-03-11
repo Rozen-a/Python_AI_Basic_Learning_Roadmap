@@ -33,11 +33,12 @@ WangDao_PythonAI/
 ├── Day14/                   # 神经网络与分类实战
 ├── Day15/                   # 深度学习进阶与训练技巧
 ├── Day16/                   # 深度学习拓展：回归/超参搜索、Embedding/Pooling、RNN
+├── Day17/                   # RNN 进阶与文本生成
 ├── 系统学习笔记/              # 系统学习的 Markdown 笔记
 │   ├── 1-Python基础笔记.md   # Day2–Day7 Python 基础与进阶总结
 │   ├── 2-数据分析笔记.md      # Day8–Day10 Numpy / Pandas / Matplotlib
 │   ├── 3-机器学习笔记.md      # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
-│   └── 4-深度学习.md         # Day13 下–Day16：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / 实战
+│   └── 4-深度学习.md         # Day13 下–Day17：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / 实战
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
 │   ├── 为什么标准化后均值为 0、标准差为 1.md
@@ -152,7 +153,7 @@ WangDao_PythonAI/
 
 ---
 
-#### 阶段四：深度学习入门（Day13 下–Day16）
+#### 阶段四：深度学习入门（Day13 下–Day17）
 
 > 目标：完成从传统机器学习到深度学习的过渡，掌握 PyTorch 基础与训练流程。
 
@@ -185,6 +186,12 @@ WangDao_PythonAI/
 - **二分类方案**：BCE vs Softmax 二分类
 - **DataLoader 高级**：`collate_fn`、`zip(*batch)`、`functools.partial` 的用法
 - **数据集缓存**：sklearn `data_home` 参数与本地缓存目录
+
+**Day17 - RNN 进阶与文本生成**
+- **RNN 接口**：`nn.RNN` 参数（`input_size`, `hidden_size`, `num_layers`, `batch_first`）、输入输出形状
+- **双向 RNN**：`bidirectional=True`、前向/后向状态拼接、输出维度变化
+- **文本表示粒度**：Char-level vs Word-level vs Subword-level
+- **文本生成**：基于 RNN 的 Char-level 文本生成流程
 
 ---
 

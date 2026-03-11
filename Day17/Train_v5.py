@@ -1,6 +1,7 @@
 """
 基于Train_v4.py的改进版
 1. 添加二分类的训练和评估方法
+2. 绘图时使用英文
 """
 import torch
 import torch.nn as nn
@@ -993,11 +994,11 @@ class Trainer:
         
         # 绘制损失曲线
         if plot_loss and ax1 is not None:
-            ax1.plot(epochs, self.train_losses, '-', label='训练损失')
-            ax1.plot(epochs, self.val_losses, '-', label='验证损失')
-            ax1.set_xlabel('轮数')
-            ax1.set_ylabel('损失')
-            ax1.set_title('训练与验证损失')
+            ax1.plot(epochs, self.train_losses, '-', label='Train Loss')
+            ax1.plot(epochs, self.val_losses, '-', label='Val Loss')
+            ax1.set_xlabel('Epoch')
+            ax1.set_ylabel('Loss')
+            ax1.set_title('Training vs Validation Loss')
             ax1.legend()
             ax1.grid(True, alpha=0.3)  # 显示网格线，alpha=0.3表示透明度为0.3
             # 设置X轴只显示整数轮数，Y轴显示更多刻度
@@ -1006,11 +1007,11 @@ class Trainer:
         
         # 绘制准确率曲线
         if plot_acc and ax2 is not None:
-            ax2.plot(epochs, self.train_accuracies, '-', label='训练准确率')
-            ax2.plot(epochs, self.val_accuracies, '-', label='验证准确率')
-            ax2.set_xlabel('轮数')
-            ax2.set_ylabel('准确率')
-            ax2.set_title('训练与验证准确率')
+            ax2.plot(epochs, self.train_accuracies, '-', label='Train Acc')
+            ax2.plot(epochs, self.val_accuracies, '-', label='Val Acc')
+            ax2.set_xlabel('Epoch')
+            ax2.set_ylabel('Accuracy')
+            ax2.set_title('Training vs Validation Accuracy')
             ax2.legend()
             ax2.grid(True, alpha=0.3)  # 显示网格线，alpha=0.3表示透明度为0.3
             # 设置X轴只显示整数轮数，Y轴显示更多刻度
