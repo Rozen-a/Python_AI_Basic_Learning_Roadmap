@@ -1,7 +1,9 @@
 """
 基于Train_v4.py的改进版
 1. 添加二分类的训练和评估方法
-2. 绘图时使用英文
+
+基于Train_v5.py
+1. 绘图时使用英文
 """
 import torch
 import torch.nn as nn
