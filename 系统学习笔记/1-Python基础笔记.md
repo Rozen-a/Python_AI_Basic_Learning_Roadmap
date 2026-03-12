@@ -1,5 +1,3 @@
-
-
 # Python基础笔记
 
 [TOC]
@@ -219,13 +217,13 @@ def join(seq)
 > 1. 元素必须在列表中，否则会报错
 > 2. 起始位置和结束位置这两个参数可以省略，默认查询整个列表
 
-![image-20260209140542878](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260209140543101.png)
+![image-20260209140542878](imgs/1-Python基础笔记.assets/20260209140543101-1773335524850-36.png)
 
 ## 4. 元组
 
 **元组不可修改**
 
-![image-20260209142907483](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260209142907555.png)
+![image-20260209142907483](imgs/1-Python基础笔记.assets/20260209142907555-1773335524850-35.png)
 
 ## 5. 字典
 
@@ -252,7 +250,7 @@ def join(seq)
 
 > default 默认为 None
 
-![image-20260215001548495](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260215001548727.png)
+![image-20260215001548495](imgs/1-Python基础笔记.assets/20260215001548727-1773335524850-37.png)
 
 **字典的特征：**
 
@@ -367,7 +365,7 @@ for index, word in enumerate(word_list):
 
 运行结果：
 
-![image-20260209164702501](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260209164702561.png)
+![image-20260209164702501](imgs/1-Python基础笔记.assets/20260209164702561-1773335524850-39.png)
 
 ```python
 word_list =['hello','today','good','day']
@@ -379,7 +377,7 @@ print(word_dict)
 
 运行结果：
 
-![image-20260209164836876](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260209164836925.png)
+![image-20260209164836876](imgs/1-Python基础笔记.assets/20260209164836925-1773335524850-38.png)
 
 ## 10. 推导式
 
@@ -502,7 +500,7 @@ print(f"key1:{key1},key2:{key2},key3:{key3}")
 
 调用函数时根据函数定义的参数的位置来传递参数
 
-![image-20260210200400563](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260210200400652.png)
+![image-20260210200400563](imgs/1-Python基础笔记.assets/20260210200400652-1773335524850-40.png)
 
 （2）**关键字参数**
 
@@ -624,7 +622,7 @@ a 是**引用**（指向 10 这个对象的 “地址”）
 
 不是把 10 复制一份给 b，而是让 b 也指向 10 这个对象（两个引用指向同一个对象）。
 
-![image-20260210143806038](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260210143806155.png)
+![image-20260210143806038](imgs/1-Python基础笔记.assets/20260210143806155-1773335524850-41.png)
 
 **补充说明**：局部变量的引用在栈帧中，全局变量的引用在模块的命名空间（堆）中。
 
@@ -842,7 +840,7 @@ duck.swim()  # 继承Swimmable → 会游泳
 
 ### 3.1 菱形问题
 
-![image-20260211202820512](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260211202820652.png)
+![image-20260211202820512](imgs/1-Python基础笔记.assets/20260211202820652-1773335524850-42.png)
 
 - 子类D同时继承B和C；
 - B和C又同时继承A；
@@ -1226,7 +1224,7 @@ finally:
 - 而在主函数中调用的其他函数，只要出现异常，都会**传递到主函数的异常捕获**中。
 - 这样就不需要在代码中，增加大量的异常捕获，能够保证代码的整洁。
 
-![image-20260212170517729](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260212170517886.png)
+![image-20260212170517729](imgs/1-Python基础笔记.assets/20260212170517886-1773335524850-43.png)
 
 > **异常传递的终止条件：**
 >
@@ -1239,7 +1237,7 @@ finally:
 
 基本语法：==raise 异常对象==
 
-![image-20260212170754715](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260212170754835.png)
+![image-20260212170754715](imgs/1-Python基础笔记.assets/20260212170754835-1773335524850-44.png)
 
 ```python
 def get_password():
@@ -1598,9 +1596,9 @@ print(f.read())  # 报错: ValueError: I/O operation on closed file.
 
 - **方式一：PyCharm设置**
 
-    ![image-20260213003315110](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260213003315221.png)
+    ![image-20260213003315110](imgs/1-Python基础笔记.assets/20260213003315221-1773335524850-45.png)
 
-    ![image-20260213003251304](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260213003251429.png)
+    ![image-20260213003251304](imgs/1-Python基础笔记.assets/20260213003251429-1773335524850-46.png)
 
     > 参数之间用空格隔开
 
@@ -1654,9 +1652,9 @@ print(f.read())  # 报错: ValueError: I/O operation on closed file.
 
 图解：
 
-<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260213011114515.png" alt="image-20260213011114370" style="zoom:67%;" />
+<img src="imgs/1-Python基础笔记.assets/20260213011114515-1773335524850-47.png" alt="image-20260213011114370" style="zoom:67%;" />
 
-<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260213011124669.png" alt="image-20260213011124512" style="zoom:75%;" />
+<img src="imgs/1-Python基础笔记.assets/20260213011124669-1773335524850-48.png" alt="image-20260213011124512" style="zoom:75%;" />
 
 ```python
 def use_copy():
@@ -1682,11 +1680,11 @@ def use_deepcopy():
 
 浅拷贝：
 
-<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260213011954846.png" alt="浅copy" style="zoom:150%;" />
+<img src="imgs/1-Python基础笔记.assets/20260213011954846-1773335524850-49.png" alt="浅copy" style="zoom:150%;" />
 
 深拷贝：
 
-<img src="https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260213011957055.png" alt="深copy" style="zoom:150%;" />
+<img src="imgs/1-Python基础笔记.assets/20260213011957055-1773335524850-50.png" alt="深copy" style="zoom:150%;" />
 
 > 列表和字典中自带的`copy()`都是浅拷贝
 >
@@ -2136,7 +2134,7 @@ print("非贪婪匹配:", re.findall(non_greedy_pattern, text))
 
 ## 10. 新建文件自动加注释
 
-![image-20260214010804585](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260214010804899.png)
+![image-20260214010804585](imgs/1-Python基础笔记.assets/20260214010804899-1773335524850-51.png)
 
 ```python
 # 作者：
