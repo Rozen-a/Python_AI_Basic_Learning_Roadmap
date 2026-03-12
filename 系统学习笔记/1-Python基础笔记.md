@@ -6,9 +6,11 @@
 
 
 
-## <span style='color:red'>Day2</span>
+<hr style="height:2px;border-width:0;color:red;background-color:red">
 
-### 1. 现字符串插值的方式
+# <span style='color:red'>Day2</span>
+
+## 1. 现字符串插值的方式
 
 | **方法**                              | **基本语法**                                                 | **主要优点**                                     |
 | :------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------ |
@@ -18,15 +20,15 @@
 
 
 
-### 2. 除法
+## 2. 除法
 
 除法：左操作数除以右操作数，得到商  a/b=0.5
 
 取整除：返回商的整数部分   a//b=0
 
-### 3. 在Python中，没有 ++ 和 -- 
+## 3. 在Python中，没有 ++ 和 -- 
 
-### 4. 三目运算符
+## 4. 三目运算符
 
 ``` python
 表达式1 if 条件表达式 else 表达式
@@ -34,7 +36,7 @@
 
 当条件表达式为True时，结果表达式1，否则结果是表达式2。
 
-### 5. if
+## 5. if
 
 ``` python
 if 判断条件1:
@@ -58,13 +60,13 @@ else:
 > 3. 多分支的结构，执行也永远只会执行其中的一个分支
 > 4. else后面不能再加分支了，else必须放在最后面
 
-### 6. range函数
+## 6. range函数
 
 `range(起始值，结束值，步长) `
 
  起始值默认为0，步长默认为1，不包含结束值（**左闭右开**）
 
-### 7. while / for + else
+## 7. while / for + else
 
 ``` python
 while循环或者是for循环:
@@ -79,13 +81,15 @@ else:
 > 2. 循环正常退出，是指以非break的方式跳出
 > 3. 大白话：只要循环不是以break形式跳出，那么就一定会执行else中的内容
 
-## <span style='color:red'>Day3</span>
+<hr style="height:2px;border-width:0;color:red;background-color:red">
 
-### 1. 切片：左闭右开
+# <span style='color:red'>Day3</span>
 
-### 2. 字符串常用操作方法
+## 1. 切片：左闭右开
 
-#### 判断类型
+## 2. 字符串常用操作方法
+
+### 判断类型
 
 ``` python
 # 如果 string 中只包含空格，则返回True
@@ -116,7 +120,7 @@ def islower()
 def isupper()
 ```
 
-#### 查找与替换
+### 查找与替换
 
 ```python
 # 检查字符串是否是以 str 开头，是则返回 True
@@ -142,7 +146,7 @@ def rindex(str,start=0,end=len(str))
 def replace(old_str, new_str, num=string.count(old))
 ```
 
-#### 大小写转换
+### 大小写转换
 
 ``` python
 # 把字符串的第一个字符大写
@@ -161,7 +165,7 @@ def upper()
 def swapcase()
 ```
 
-#### 其他功能
+### 其他功能
 
 ``` python
 # 返回一个原字符串左对齐，并使用空格填充至长度 width 的新字符串
@@ -198,7 +202,7 @@ def splitlines()
 def join(seq)
 ```
 
-### 3. 列表常用操作方法
+## 3. 列表常用操作方法
 
 增加: `append()`、 `extend()`、 `insert()`
 
@@ -217,13 +221,13 @@ def join(seq)
 
 ![image-20260209140542878](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260209140543101.png)
 
-### 4. 元组
+## 4. 元组
 
 **元组不可修改**
 
 ![image-20260209142907483](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260209142907555.png)
 
-### 5. 字典
+## 5. 字典
 
 **基本语法：`字典名 = {键1:值1, 键2: 值2, 键3: 值3, ...}`**
 
@@ -266,9 +270,9 @@ def join(seq)
 
 
 
-### 6. 除了变量名，函数名也可以被del()删除
+## 6. 除了变量名，函数名也可以被del()删除
 
-### 7. 集合
+## 7. 集合
 
 > 集合主要是用来去重。
 >
@@ -326,7 +330,7 @@ inter_set = set1 & set2
 print(inter_set) # 输出: {3, 4}
 ```
 
-### 8. 公共运算符
+## 8. 公共运算符
 
 | 运算符             | 描述                       | 支持的容器类型                 |
 | :----------------- | :------------------------- | :----------------------------- |
@@ -342,7 +346,7 @@ print(inter_set) # 输出: {3, 4}
 | 集合        | 比较元素是否相同（顺序无关）     | 判断子集/超集关系（一般少用）        |
 | 字典        | 比较键值对是否相同（顺序无关）   | **不支持**，会抛出 `TypeError`       |
 
-### 9. 公共方法
+## 9. 公共方法
 
 | 编号 | 函数          | 字符串 (str) | 列表 (list) | 元组 (tuple) | 字典 (dict) | 集合 (set) | 描述与说明                                                   |
 | ---- | ------------- | ------------ | ----------- | ------------ | ----------- | ---------- | ------------------------------------------------------------ |
@@ -377,7 +381,7 @@ print(word_dict)
 
 ![image-20260209164836876](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260209164836925.png)
 
-### 10. 推导式
+## 10. 推导式
 
 基本语法：
 
@@ -393,9 +397,11 @@ print(word_dict)
 | 字典推导式 | `{key_expr: value_expr for item in iterable if condition}` | 创建一个新的字典。             |
 | 集合推导式 | `{expr for item in iterable if condition}`                 | 创建一个新的集合（自动去重）。 |
 
-## <span style='color:red'>Day4</span>
+<hr style="height:2px;border-width:0;color:red;background-color:red">
 
-### 1. 全局变量
+# <span style='color:red'>Day4</span>
+
+## 1. 全局变量
 
 如果在函数内要修改全局变量的值，需要使用global关键字声明
 
@@ -419,7 +425,7 @@ testB() # 200
 print(f'全局变量a = {a}') # 全局变量a = 200
 ```
 
-### 2. 函数可以作为 (另一个函数的)参数进行传递
+## 2. 函数可以作为 (另一个函数的)参数进行传递
 
 ```python
 # 定义加法函数
@@ -448,7 +454,7 @@ print(calculate(10, 20, get_substract))
 
 > 此时被传递函数不加括号，加括号则传递的是函数返回值
 
-### 3. 函数返回值，拆包
+## 3. 函数返回值，拆包
 
 可以返回多个结果，默认是元组类型
 
@@ -490,7 +496,7 @@ key1,key2,key3 = dict1
 print(f"key1:{key1},key2:{key2},key3:{key3}")
 ```
 
-### 4. 函数的多种参数
+## 4. 函数的多种参数
 
 (1)**位置参数**
 
@@ -602,7 +608,7 @@ def print_demo(*args, **kwargs):
 print_demo(1, 2, 3, 4, 5, name='Alice', age=20, gender='女')
 ```
 
-### 5. 引用
+## 5. 引用
 
 **python中的引用？**
 
@@ -681,7 +687,7 @@ if __name__ == '__main__':
 
 ==引用计数为0时，对应的对象空间就会被释放==
 
-### 6. copy()
+## 6. copy()
 
 使用copy对可变对象进行赋值，会将原对象的值复制给另一个堆空间，新的可变对象引用指向此空间，从而两个引用指向不同的空间，不会同步改变
 
@@ -693,7 +699,7 @@ list = [10, 20]
 list1 = list.copy() # 将list的值赋给list1，list和list1的id不同
 ```
 
-### 7. 匿名函数
+## 7. 匿名函数
 
 格式：==lambda 参数1, 参数2, ... : 表达式 	# 冒号前是参数，冒号后是返回结果的表达式==
 
@@ -725,7 +731,7 @@ sub_result = cal_num(a,b,lambda a,b:a-b)
 mul_result = cal_num(a,b,lambda a,b:a*b)
 ```
 
-### 8. 面向对象内置方法
+## 8. 面向对象内置方法
 
 初始化: `__init__`
 
@@ -765,9 +771,11 @@ stu.run()
 stu.eat()
 ```
 
-## <span style='color:red'>Day5</span>
+<hr style="height:2px;border-width:0;color:red;background-color:red">
 
-### 1. 使用注解说明参数类型
+# <span style='color:red'>Day5</span>
+
+## 1. 使用注解说明参数类型
 
 格式：==def function(形参名:注解)==
 
@@ -790,7 +798,7 @@ class House:
 		print("要添加 %s" % item)
 ```
 
-### 2. 访问控制
+## 2. 访问控制
 
 | 命名方式             | 访问权限   | 说明                                                         |
 | -------------------- | ---------- | ------------------------------------------------------------ |
@@ -798,7 +806,7 @@ class House:
 | `_attr`（单下划线）  | **受保护** | 约定为内部使用，外部应避免访问（非强制）                     |
 | `__attr`（双下划线） | **私有**   | 被 Python 解释器改名，外部无法直接访问（强制隐藏）（子类也无法访问） |
 
-### 3. 继承
+## 3. 继承
 
 **继承格式：**
 
@@ -832,7 +840,7 @@ duck.fly()   # 继承Flyable → 会飞
 duck.swim()  # 继承Swimmable → 会游泳
 ```
 
-#### 3.1 菱形问题
+### 3.1 菱形问题
 
 ![image-20260211202820512](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260211202820652.png)
 
@@ -884,7 +892,7 @@ print(D.__mro__)
 >
 > - 记住：查看 ==`类名.__mro__`== 即可明确方法搜索顺序，无需死记规则。
 
-#### 3.1 子类调用父类方法
+### 3.1 子类调用父类方法
 
 子类重写父类方法后，可通过 ==`super()`== 函数调用父类的原始实现
 
@@ -914,7 +922,7 @@ print(student.get_info())
 > - 这种方式，目前在 Python 3.x 还支持这种方式
 > - 这种方法 **不推荐使用**，因为一旦 **父类发生变化**，方法调用位置的 **类名** 同样需要修改
 
-### 4. 空函数/类
+## 4. 空函数/类
 
 使用`pass`表示空函数/类
 
@@ -937,7 +945,7 @@ print(son.gender)
 son.walk()
 ```
 
-### 5. 多态
+## 5. 多态
 
 **多态依赖继承和方法重写，需同时满足：**
 
@@ -981,7 +989,7 @@ animal_sound(duck)  # 输出：嘎嘎叫
 
 > **关键**：`animal_sound` 函数无需区分传入的是 `Dog`、`Cat` 还是 `Duck`，只需调用 `make_sound` 方法，即可得到对应行为。
 
-### 6. 抽象类与抽象方法
+## 6. 抽象类与抽象方法
 
  **抽象类==继承 `ABC`==**
 
@@ -1034,7 +1042,7 @@ Animal()  # 报错
 | 是否强制子类实现方法 | ✅      | ❌      |
 | 是否用于规范设计     | ✅      | ❌      |
 
-### 7. 抽象属性（`@property`）
+## 7. 抽象属性（`@property`）
 
 **规定子类必须有某个属性**
 
@@ -1052,9 +1060,11 @@ class Student(Person):
         return "Tom"
 ```
 
-## <span style='color:red'>Day6</span>
+<hr style="height:2px;border-width:0;color:red;background-color:red">
 
-### 1. 对象属性和类属性
+# <span style='color:red'>Day6</span>
+
+## 1. 对象属性和类属性
 
 **对象属性：**定义在`__init__`方法中，与具体对象绑定
 
@@ -1083,7 +1093,7 @@ Student.school = "清华大学"
 print(stu1.school)     # 输出：清华大学（所有对象共享新值）
 ```
 
-### 2. 类方法
+## 2. 类方法
 
 绑定到**类本身**的方法，用于操作类属性（通过 `@classmethod` 装饰）
 
@@ -1119,7 +1129,7 @@ tool2 = Tool("螺丝刀")
 Tool.show_total()  # 输出：当前工具总数：2 个
 ```
 
-### 3. 静态方法
+## 3. 静态方法
 
 定义在类中的**普通函数**，与类属性、对象属性均无直接关联（通过 `@staticmethod` 装饰）
 
@@ -1144,7 +1154,7 @@ print(MathHelper.is_even(4))   # 输出：True
 print(MathHelper.average(3, 5)) # 输出：4.0
 ```
 
-### 4. `__new__`方法
+## 4. `__new__`方法
 
 - 使用类名()创建对象时，Python解释器会先调用`__new__`方法为对象分配空间
 - `__new__`是由`object`基类提供的内置静态方法，主要作用有两个：
@@ -1153,7 +1163,7 @@ print(MathHelper.average(3, 5)) # 输出：4.0
 - Python解释器获得对象引用后，将引用作为第一个参数传递给`__init__`方法
 - 通过重写`__new__`可以控制对象的创建过程，确保只生成一个实例
 
-### 5. 单例模式
+## 5. 单例模式
 
 单例是一种创建型设计模式，让你保证一个类只有一个实例对象，每一次执行`类名()`创建的对象，内存地址是相同的。
 
@@ -1223,7 +1233,7 @@ finally:
 > - **被某个层级的 try - except 捕获**：如上述例子中，主程序的 except 捕获异常后，传递终止。
 > - **到达程序顶层仍未被捕获**：此时程序会打印异常信息并崩溃。
 
-### 7. 抛出异常
+## 7. 抛出异常
 
 在开发中，除了 **代码执行出错** Python 解释器会 **抛出** 异常之外， 还可以根据 **应用程序特有的业务需求主动抛出异常**
 
@@ -1255,7 +1265,7 @@ except Exception as e:
 > 2. `raise` 关键字后面可以跟一个异常对象，例如 `Exception("错误信息")`。
 > 3. 抛出的异常需要被外部的 `try - except` 语句捕获并处理，否则程序会崩溃。
 
-### 8. 断言（Assertion）异常
+## 8. 断言（Assertion）异常
 
 **语法：**==`assert 条件表达式, 错误信息`==
 
@@ -1283,7 +1293,7 @@ empty_scores = []
 avg_empty = calculate_average(empty_scores)  # 此处会抛出 AssertionError
 ```
 
-### 9. 常见异常类型
+## 9. 常见异常类型
 
 | 编号 | 异常类型            | 触发场景                    | 示例                                         |
 | ---- | ------------------- | --------------------------- | -------------------------------------------- |
@@ -1297,7 +1307,7 @@ avg_empty = calculate_average(empty_scores)  # 此处会抛出 AssertionError
 | 8    | `AssertionError`    | 断言失败                    | `x = 5; assert x > 10`                       |
 | 9    | `FileNotFoundError` | 打开的文件不存在            | `open("data.txt", "r")`                      |
 
-### 10. 模块
+## 10. 模块
 
 通过`import`导入模块，导入方式：
 
@@ -1328,7 +1338,7 @@ import sys
 print(sys.path) # 输出模块搜索路径列表
 ```
 
-### 11. 模块的name属性
+## 11. 模块的name属性
 
 每个模块都有一个内置属性`__name__`，用于标识模块的名字
 
@@ -1341,7 +1351,7 @@ print(sys.path) # 输出模块搜索路径列表
 >
 > `if __name__ == "__main__":`中的内容无法被其他模块使用
 
-### 12. 包
+## 12. 包
 
 包是一个包含了`__init__.py`文件的文件夹
 
@@ -1428,7 +1438,7 @@ my_module1.say_hello()
 my_module2.say_hello()
 ```
 
-### 13. pip
+## 13. pip
 
 安装最新版本的包
 
@@ -1486,9 +1496,9 @@ pip3 install 包名 -i 镜像源地址
 pip config set global.index-url 镜像源地址
 ```
 
-### 14. 文件
+## 14. 文件
 
-#### 14.1 打开文件 `open()`
+### 14.1 打开文件 `open()`
 
 打开文件并返回文件句柄，使用==`文件句柄.文件方法`==格式对文件进行操作
 
@@ -1510,7 +1520,7 @@ pip config set global.index-url 镜像源地址
 | `wb` | 二进制写 | 以二进制格式写（如保存图片）                 | 常用于文件传输、保存非文本数据       |
 | `ab` | 二进制追 | 以二进制格式追加写                           | 如给视频文件追加内容                 |
 
-#### 14.2 文件读方法
+### 14.2 文件读方法
 
 - **`read(size)`：读指定长度 / 全部内容**
     - `size`（可选）：指定读取字符数，默认读取全部
@@ -1520,7 +1530,7 @@ pip config set global.index-url 镜像源地址
 - **`readlines()`：读取所有行，返回列表**
     - 把文件每一行作为列表的一个元素，适合处理 “需要按行操作” 的场景
 
-#### 14.3 文件写方法
+### 14.3 文件写方法
 
 - **`write(content)`：写入字符串/二进制数据**
     - 文本模式：`content`必须是字符串
@@ -1528,7 +1538,7 @@ pip config set global.index-url 镜像源地址
 - **`writelines(line)`：写入列表（元素为字符串）**
     - 用于批量写入多行内容，列表中每个元素是一行字符串（需手动加`\n`）
 
-### 15. 安全操作`with`
+## 15. 安全操作`with`
 
 with语句能自动关闭文件（退出with块时触发），无需手动调用`close()`
 
@@ -1558,7 +1568,7 @@ with open("with_write.txt", "w", encoding="utf-8") as f:
 print(f.read())  # 报错: ValueError: I/O operation on closed file.
 ```
 
-### 16. 文件/目录操作
+## 16. 文件/目录操作
 
 需要导入`os`模块，使用==`import os`==
 
@@ -1584,7 +1594,7 @@ print(f.read())  # 报错: ValueError: I/O operation on closed file.
 | 05   | `chdir`      | 修改工作目录                   | `os.chdir(目标目录)`      |
 | 06   | `path.isdir` | 判断是否是文件夹               | `os.path.isdir(文件路径)` |
 
-### 17. 给Python传参
+## 17. 给Python传参
 
 - **方式一：PyCharm设置**
 
@@ -1625,14 +1635,14 @@ print(f.read())  # 报错: ValueError: I/O operation on closed file.
     > - `sys.argv[1]` = `'ip'`（第一个参数）
     > - `sys.argv[2]` = `'port'`（第二个参数）
 
-### 18. `eavl()`
+## 18. `eavl()`
 
 作用：**将字符串作为代码来执行**（一般用于读配置文件（字典形式））
 
 - 将字典放在文件中，读取出来后直接作为参数传给`eval()`，将会直接变为字典变量
 - 语句：`eval("1+1")`执行结果为2
 
-### 19. `is`与`==`的区别
+## 19. `is`与`==`的区别
 
 `is`用于判断两个变量**引用的对象是否为同一个**（内存地址是否一致）`
 
@@ -1640,7 +1650,7 @@ print(f.read())  # 报错: ValueError: I/O operation on closed file.
 
 `==`用于判断引用变量的**值是否相等**
 
-### 20. 浅cpoy与深copy
+## 20. 浅cpoy与深copy
 
 图解：
 
@@ -1690,9 +1700,11 @@ def use_deepcopy():
 >
 > - `copy.copy()`对于不可变类型，不会拷贝数据，仅仅是拷贝引用并指向对象
 
-## <span style="color:red">Day7</span>
+<hr style="height:2px;border-width:0;color:red;background-color:red">
 
-### 1. 正则表达式
+# <span style="color:red">Day7</span>
+
+## 1. 正则表达式
 
 **匹配单个字符：**
 
@@ -1771,7 +1783,7 @@ def match_group3():
 - `$`
     - 字符串结束
 
-### 2. re模块
+## 2. re模块
 
 使用re模块通过正则表达式对字符串进行匹配
 
@@ -1791,7 +1803,7 @@ result.group()
 
 ****
 
-#### 2.1 match
+### 2.1 match
 
 语法格式：==`re.match(pattern, text, flags=0)`==
 
@@ -1824,7 +1836,7 @@ print(re.match(pattern, text2))  # 输出：None（失败）
 
 ****
 
-#### 2.2 search
+### 2.2 search
 
 语法格式：==`re.search(pattern, text, flags=0)`==
 
@@ -1850,7 +1862,7 @@ if result:
 
 ****
 
-#### 2.3 findall
+### 2.3 findall
 
 语法格式：==`re.findall(pattern, text, flags=0)`==
 
@@ -1871,7 +1883,7 @@ print("所有手机号:", phones)  # 输出：所有手机号: ['13812345678', '
 
 ****
 
-#### 2.4 sub
+### 2.4 sub
 
 语法格式：==`re.sub(pattern, repl, text, count=0, flags=0)`==
 
@@ -1907,7 +1919,7 @@ print(new_text)  # 输出：138 1234 5678
 
 ****
 
-#### 2.5 split
+### 2.5 split
 
 语法格式：==`re.split(pattern, text, maxsplit=0, flags=0)`==
 
@@ -1928,7 +1940,7 @@ result = re.split(pattern, text)
 print("分割结果:", result)  # 输出：分割结果: ['apple', 'banana', 'orange', 'grape']
 ```
 
-### 3.  re.compile (pattern, flags=0)：预编译正则
+## 3.  re.compile (pattern, flags=0)：预编译正则
 
 将正则规则预编译为 Pattern 对象，后续多次使用时提升效率（避免重复解析规则）
 
@@ -1952,7 +1964,7 @@ for text in texts:
 
 
 
-### 4. flags 参数：匹配模式控制
+## 4. flags 参数：匹配模式控制
 
 常用`flags`参数值（直接使用简称即可）：
 
@@ -1975,7 +1987,7 @@ print(re.findall(pattern, text))     # 输出: ['hello']
 print(re.findall(pattern, text, re.I))   # 输出: ['Hello', 'HELLO', 'hello']
 ```
 
-### 5. 如何查找第二个
+## 5. 如何查找第二个
 
 `search` 只能查找第一个匹配项。如果要查找第二个，可以使用 `finditer` 配合 `next` 实现：
 
@@ -2003,7 +2015,7 @@ print("第二个匹配的数字:", second)  # 输出：第二个匹配的数字:
 
 > `next()`先返回当前所指元素值，再指向下一元素
 
-### 6. 生成器函数（与迭代器类似）
+## 6. 生成器函数（与迭代器类似）
 
 实现一个**生成器函数**，模仿 Python 内置 `range()` 的基本功能：
 
@@ -2043,7 +2055,7 @@ for num in my_range(5):
 3. **第三次**调用：从 `i += 1` 继续，`i=2`，循环，`yield 2`，返回2，暂停
 4. **第四次**调用：从 `i += 1` 继续，`i=3`，循环条件 `i < 3` 不成立，退出循环，返回None，抛出StopIteration
 
-### 7. `iter()`函数
+## 7. `iter()`函数
 
 将**可迭代对象**传给`iter`函数进行处理，返回一个**迭代器**
 
@@ -2085,7 +2097,7 @@ def use_for():
 use_for()
 ```
 
-### 8. 贪婪与非贪婪
+## 8. 贪婪与非贪婪
 
 - **贪婪匹配**：默认行为，量词（`* + {n,}`）会**“尽可能多”**地匹配字符
 - **非贪婪匹配**：在量词后加？（如 `*? +? {n,}?`），会**“尽可能少”**地匹配字符
@@ -2118,11 +2130,11 @@ print("非贪婪匹配:", re.findall(non_greedy_pattern, text))
 # 输出：非贪婪匹配: ['内容1', '内容2']（匹配两个独立标签内的内容）
 ```
 
-### 9. `r'字符串'`
+## 9. `r'字符串'`
 
 这里的`r`表示原生字符串，正常打印字符串时对于例如 '\\' 的字符我们需要进行转义，但使用 `r'字符串'`则不需要进行转义
 
-### 10. 新建文件自动加注释
+## 10. 新建文件自动加注释
 
 ![image-20260214010804585](https://gitee.com/rozen_gitee/typora-img/raw/master/img/20260214010804899.png)
 
@@ -2132,7 +2144,7 @@ print("非贪婪匹配:", re.findall(non_greedy_pattern, text))
 # ...
 ```
 
-### 11. 面向对象思想写二叉树
+## 11. 面向对象思想写二叉树
 
 ```python
 from collections import deque
@@ -2215,7 +2227,7 @@ if __name__ == '__main__':
     tree.level_order()
 ```
 
-### 12. 容器：双端队列`deque`
+## 12. 容器：双端队列`deque`
 
 | 操作             | 方法                             | 描述                                                         |
 | :--------------- | :------------------------------- | :----------------------------------------------------------- |
@@ -2232,7 +2244,7 @@ if __name__ == '__main__':
 
 > `extendleft()`方法在左侧批量添加元素时，最终结果会是原迭代器顺序的**反转**，因为它是一个一个从左侧添加的。
 
-### 13. 排序函数`sorted()`
+## 13. 排序函数`sorted()`
 
 对**可迭代对象**（列表、元组、字典等）进行排序，返回一个新的排序后的**列表**，**不改变原对象**。
 
@@ -2276,7 +2288,7 @@ print(sorted_students)
 
 ****
 
-#### 多条件排序
+### 多条件排序
 
 当需要按“多个条件”排序时，可让 `key` 返回**元组**（按元组元素顺序依次作为排序依据）。
 
@@ -2309,7 +2321,7 @@ print(sorted_students)
 [{'name': 'Bob', 'age': 18}, {'name': 'Alice', 'age': 18}, {'name': 'Charlie', 'age': 20}]
 ```
 
-### 14. 内置方法`__repr__`
+## 14. 内置方法`__repr__`
 
 与`__str__`类似，但更强大的打印函数
 
