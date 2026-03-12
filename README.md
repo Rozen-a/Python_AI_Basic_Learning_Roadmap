@@ -34,11 +34,12 @@ WangDao_PythonAI/
 ├── Day15/                   # 深度学习进阶与训练技巧
 ├── Day16/                   # 深度学习拓展：回归/超参搜索、Embedding/Pooling、RNN
 ├── Day17/                   # RNN 进阶与文本生成
+├── Day18/                   # LSTM、双向与多层 RNN、子词级建模 (BPE)
 ├── 系统学习笔记/              # 系统学习的 Markdown 笔记
 │   ├── 1-Python基础笔记.md   # Day2–Day7 Python 基础与进阶总结
 │   ├── 2-数据分析笔记.md      # Day8–Day10 Numpy / Pandas / Matplotlib
 │   ├── 3-机器学习笔记.md      # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
-│   └── 4-深度学习.md         # Day13 下–Day17：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / 实战
+│   └── 4-深度学习.md         # Day13 下–Day18 上：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / LSTM / BPE / 实战
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
 │   ├── 为什么标准化后均值为 0、标准差为 1.md
@@ -153,7 +154,7 @@ WangDao_PythonAI/
 
 ---
 
-#### 阶段四：深度学习入门（Day13 下–Day17）
+#### 阶段四：深度学习入门（Day13 下–Day18 上）
 
 > 目标：完成从传统机器学习到深度学习的过渡，掌握 PyTorch 基础与训练流程。
 
@@ -192,6 +193,12 @@ WangDao_PythonAI/
 - **双向 RNN**：`bidirectional=True`、前向/后向状态拼接、输出维度变化
 - **文本表示粒度**：Char-level vs Word-level vs Subword-level
 - **文本生成**：基于 RNN 的 Char-level 文本生成流程
+
+**Day18 上 - LSTM、多层/双向 RNN 与子词级建模**
+- **文本生成优化**：`Temperature` 与 `Multinomial` 机制
+- **LSTM (长短期记忆网络)**：遗忘门、输入门、输出门、细胞状态，解决长距离依赖问题
+- **RNN 变体总结**：对比单层/多层、单向/双向 RNN 的结构与数据形状
+- **子词级建模 (BPE)**：OOV 问题、BPE 算法原理、`subword-nmt` 工具实战、`@@` 粘合剂
 
 ---
 
