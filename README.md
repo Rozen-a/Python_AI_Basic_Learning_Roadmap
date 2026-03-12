@@ -1,4 +1,4 @@
-## WangDao PythonAI
+## Python AI Basic Learning Roadmap
 
 个人 Python / 数据分析 / 机器学习 学习代码与笔记仓库
 
