@@ -41,10 +41,11 @@ WangDao_PythonAI/
 │   ├── 2-数据分析笔记.md      # Day8–Day10 Numpy / Pandas / Matplotlib
 │   ├── 3-机器学习笔记.md      # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
 │   ├── 4-深度学习.md         # Day13 下–Day18 上：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / LSTM / BPE / 实战
-│   ├── 5-自然语言处理.md      # Seq2Seq / Attention / GRU / Masking / 损失函数优化 / 热力图可视化
+│   ├── 5-自然语言处理.md      # Seq2Seq / Attention / GRU / Masking / BLEU 评分 / 热力图可视化
 │   └── imgs/                 # 笔记图片存储
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
+│   ├── wc 命令.md
 │   ├── 为什么标准化后均值为 0、标准差为 1.md
 │   └── 逻辑回归为什么使用 Sigmoid 函数.md
 └── README.md
@@ -211,16 +212,19 @@ WangDao_PythonAI/
 
 **Project1 - Seq2Seq 英日翻译项目**
 
-- **核心架构**：Seq2Seq (Encoder-Decoder)、GRU 模型应用
+- **核心架构**：Seq2Seq (Encoder-Decoder)、GRU 模型应用、日语分词工具 `Janome`
 - **注意力机制**：Bahdanau 注意力原理、计算步骤 (Score / Softmax / Weighted Sum)
 - **训练优化**：填充掩码 (Padding Mask)、因果掩码 (Causal Mask)、带掩码的交叉熵损失函数
+- **模型评估与指标**：BLEU 算法原理 (n-gram Precision / BP / Clipping)、测试集平均 **BLEU-1: 56.91%**, **BLEU-4: 21.27%**
 - **推理与可视化**：自回归生成、注意力热力图 (Heatmap) 可解释性分析
+- **实战对比与分析**：对比 Sutskever (2014) 原始论文架构，分析注意力机制对参数量与长程依赖的影响，探讨集束搜索与贪心搜索的性能差异
 - **Python 进阶**：`@property` 装饰器、`random.choice` 与 `np.random.choice` 差异
 
 ---
 
 ### 其他笔记与零散内容
 - **fit() 和 transform().md**：解释 `fit()` 和 `transform()` 的区别与使用场景
+- **wc 命令.md**：Linux `wc` 命令详解，用于统计文件行数、单词数、字节数等
 - **为什么标准化后均值为 0、标准差为 1.md**：说明标准化后的统计性质及原因
 - **逻辑回归为什么使用 Sigmoid 函数.md**：从线性函数 / 阶跃函数对比到对数几率模型，系统解释 Sigmoid 在逻辑回归中的作用
 
