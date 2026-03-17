@@ -1608,7 +1608,7 @@ print(f.read())  # 报错: ValueError: I/O operation on closed file.
 
     在命令行中输入命令传参并执行：
 
-    ``` 
+    ``` bash
     python .\17-给python传参.py ip port
     ```
 
