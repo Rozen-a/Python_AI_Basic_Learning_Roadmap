@@ -36,12 +36,13 @@ WangDao_PythonAI/
 ├── Day17/                   # RNN 进阶与文本生成
 ├── Day18/                   # LSTM、双向与多层 RNN、子词级建模 (BPE)
 ├── Project1_Seq2Seq-Translation-en-ja/ # 英日翻译 Seq2Seq 项目实战
+├── Project2_Transformer/              # 德英翻译 Transformer 项目实战
 ├── 系统学习笔记/              # 系统学习的 Markdown 笔记
 │   ├── 1-Python基础笔记.md   # Day2–Day7 Python 基础与进阶总结
 │   ├── 2-数据分析笔记.md      # Day8–Day10 Numpy / Pandas / Matplotlib
 │   ├── 3-机器学习笔记.md      # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
-│   ├── 4-深度学习.md         # Day13 下–Day18 上：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / LSTM / BPE / 实战
-│   ├── 5-自然语言处理.md      # Seq2Seq / Attention / GRU / Masking / BLEU 评分 / 热力图可视化
+│   ├── 4-深度学习.md         # Day13 下–Day18：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / LSTM / BPE / 实战
+│   ├── 5-自然语言处理.md      # Seq2Seq / Attention / GRU / Masking / BLEU / Transformer / 热力图
 │   └── imgs/                 # 笔记图片存储
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
@@ -158,7 +159,7 @@ WangDao_PythonAI/
 
 ---
 
-#### 阶段四：深度学习入门（Day13 下–Day18 上）
+#### 阶段四：深度学习入门（Day13 下–Day18）
 
 > 目标：完成从传统机器学习到深度学习的过渡，掌握 PyTorch 基础与训练流程。
 
@@ -198,7 +199,7 @@ WangDao_PythonAI/
 - **文本表示粒度**：Char-level vs Word-level vs Subword-level
 - **文本生成**：基于 RNN 的 Char-level 文本生成流程
 
-**Day18 上 - LSTM、多层/双向 RNN 与子词级建模**
+**Day18 - LSTM、多层/双向 RNN 与子词级建模**
 - **文本生成优化**：`Temperature` 与 `Multinomial` 机制
 - **LSTM (长短期记忆网络)**：遗忘门、输入门、输出门、细胞状态，解决长距离依赖问题
 - **RNN 变体总结**：对比单层/多层、单向/双向 RNN 的结构与数据形状
@@ -206,9 +207,9 @@ WangDao_PythonAI/
 
 ---
 
-#### 阶段五：自然语言处理项目实战 (Project1)
+#### 阶段五：自然语言处理项目实战
 
-> 目标：通过 Seq2Seq 项目实战，深入理解编码器-解码器架构、注意力机制与序列建模。
+> 目标：通过 Seq2Seq 与 Transformer 项目实战，深入理解编码器-解码器架构、注意力机制、序列建模以及并行计算优势。
 
 **Project1 - Seq2Seq 英日翻译项目**
 
@@ -219,6 +220,14 @@ WangDao_PythonAI/
 - **推理与可视化**：自回归生成、注意力热力图 (Heatmap) 可解释性分析
 - **实战对比与分析**：对比 Sutskever (2014) 原始论文架构，分析注意力机制对参数量与长程依赖的影响，探讨集束搜索与贪心搜索的性能差异
 - **Python 进阶**：`@property` 装饰器、`random.choice` 与 `np.random.choice` 差异
+
+**Project2 - Transformer 德英翻译项目**
+
+- **核心架构**：Transformer (Encoder-Decoder)、多头注意力 (Multi-Head Attention)、位置编码 (Positional Encoding)
+- **数据工程**：Moses Tokenization 数据清洗、BPE (Byte Pair Encoding) 子词建模、动态批处理 (Token Batching)
+- **模型优化**：标签平滑 (Label Smoothing)、Noam 学习率调度器、层归一化 (LayerNorm) 与残差连接
+- **评估与可视化**：BLEU-4 定量评估、Multi-Head Attention 权重热力图可视化
+- **实战意义**：深入理解并行计算优势，解决长程依赖问题，掌握现代 NLP 的基石模型。
 
 ---
 
