@@ -42,7 +42,7 @@ WangDao_PythonAI/
 │   ├── 2-数据分析笔记.md      # Day8–Day10 Numpy / Pandas / Matplotlib
 │   ├── 3-机器学习笔记.md      # Day10–Day13 上：特征工程 / KNN / 回归与正则化 / 逻辑回归
 │   ├── 4-深度学习.md         # Day13 下–Day18：PyTorch / 神经网络 / 初始化 / BN & Dropout / EarlyStopping / RNN / Embedding / 超参搜索 / LSTM / BPE / 实战
-│   ├── 5-自然语言处理.md      # Seq2Seq / Attention / GRU / Masking / BLEU / Transformer / 热力图
+│   ├── 5-自然语言处理.md      # Seq2Seq / Attention / Masking / BLEU / Transformer / ResNet / LN / 调参工程化 / Linux 命令
 │   └── imgs/                 # 笔记图片存储
 ├── 零散笔记/                 # 若干补充知识点
 │   ├── fit() 和 transform().md
@@ -224,10 +224,12 @@ WangDao_PythonAI/
 **Project2 - Transformer 德英翻译项目**
 
 - **核心架构**：Transformer (Encoder-Decoder)、多头注意力 (Multi-Head Attention)、位置编码 (Positional Encoding)
+- **核心组件**：残差连接 (ResNet) 解决深层训练难题、层归一化 (LayerNorm) 稳定数据分布
 - **数据工程**：Moses Tokenization 数据清洗、BPE (Byte Pair Encoding) 子词建模、动态批处理 (Token Batching)
-- **模型优化**：标签平滑 (Label Smoothing)、Noam 学习率调度器、层归一化 (LayerNorm) 与残差连接
-- **评估与可视化**：BLEU-4 定量评估、Multi-Head Attention 权重热力图可视化
-- **实战意义**：深入理解并行计算优势，解决长程依赖问题，掌握现代 NLP 的基石模型。
+- **模型优化**：标签平滑 (Label Smoothing)、Noam 学习率调度器、验证集最佳检查点自动保存
+- **评估与监控**：BLEU-4 定量评估（截断匹配与短句惩罚）、TensorBoard 实时曲线记录、Multi-Head Attention 权重热力图可视化
+- **工程实践**：Python `argparse` 参数解析、Shell 脚本自动化流水线、Linux `touch/cat` 核心命令应用
+- **实战意义**：深入理解并行计算优势，掌握现代大模型 (LLM) 的基石架构。
 
 ---
 
